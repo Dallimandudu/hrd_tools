@@ -19,7 +19,10 @@
         .menu-btn:hover { border-color: #0a1f44; background-color: #f1f5f9; transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.05); }
         .menu-icon { font-size: 40px; margin-bottom: 15px; }
         .menu-title { font-size: 16px; font-weight: bold; color: #0a1f44; margin-bottom: 5px; }
-        .menu-desc { font-size: 12px; color: #64748b; line-height: 1.4; word-break: keep-all; }
+        
+        /* 텍스트 줄바꿈 최적화를 위한 line-height 조정 */
+        .menu-desc { font-size: 12px; color: #64748b; line-height: 1.5; word-break: keep-all; }
+        
         .footer-text { grid-column: 1 / -1; text-align: center; margin-top: 20px; font-weight: bold; color: #94a3b8; font-size: 13px; border-top: 1px solid #e2e8f0; padding-top: 20px; }
 
         .btn-back { position: absolute; top: 30px; left: 30px; background: none; border: none; color: #64748b; font-weight: bold; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
@@ -94,25 +97,27 @@
         <div class="menu-btn" onclick="showApp('app-group')">
             <div class="menu-icon">👥</div>
             <div class="menu-title">1. 랜덤 조배정표 만들기</div>
-            <div class="menu-desc">지그재그 알고리즘, 부서 분산, 동조 배정 등 고도화된 연수생 조 편성</div>
+            <div class="menu-desc">지그재그 알고리즘, 부서 분산, 특정 인원<br>동조 배정 등 고도화된 연수생 조 편성</div>
         </div>
 
         <div class="menu-btn" onclick="showApp('app-room')">
             <div class="menu-icon">🏨</div>
             <div class="menu-title">2. 숙소 배정표 만들기</div>
-            <div class="menu-desc">2인 1실 자동 매칭, 성별 분리, 동실지정까지 가능한 자동화 툴</div>
+            <!-- 요청하신 대로 깔끔하게 2줄로 강제 줄바꿈 처리 -->
+            <div class="menu-desc">2인 1실 자동매칭, 성별분리, 동실지정까지<br>가능한 자동화 툴</div>
         </div>
 
         <div class="menu-btn" onclick="showApp('app-vat')">
             <div class="menu-icon">🧮</div>
             <div class="menu-title">3. 실시간 부가세 계산기</div>
-            <div class="menu-desc">제안서 및 정산 작업 시 필수! 합계금액, 공급가액, 부가세 즉시 자동 연산</div>
+            <!-- 요청하신 대로 깔끔하게 2줄로 강제 줄바꿈 처리 -->
+            <div class="menu-desc">제안서 및 정산 작업 시 필수!<br>합계금액, 공급가액, 부가세 등 즉시 자동 연산</div>
         </div>
 
         <div class="menu-btn" onclick="showApp('app-survey')">
             <div class="menu-icon">📊</div>
             <div class="menu-title">4. 만족도 조사 변환기</div>
-            <div class="menu-desc">(업데이트 예정) 텍스트형 설문 응답을 5점 척도 점수로 자동 변환</div>
+            <div class="menu-desc">(업데이트 예정)<br>텍스트형 설문 응답을 5점 척도 점수로 자동 변환</div>
         </div>
 
         <div class="footer-text">K-Brain HRD 사업실_사업3팀 운영 자동화 TOOL</div>
@@ -354,7 +359,6 @@
     }
 
     window.onload = function() {
-        // 브라우저 뒤로가기(History API) 초기 상태 세팅
         let initialHash = window.location.hash.replace('#', '');
         if (initialHash && document.getElementById(initialHash)) {
             history.replaceState({ page: initialHash }, '', '#' + initialHash);
