@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>K-Brain 오프라인 교육 자동화 솔루션</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
@@ -19,10 +19,7 @@
         .menu-btn:hover { border-color: #0a1f44; background-color: #f1f5f9; transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.05); }
         .menu-icon { font-size: 40px; margin-bottom: 15px; }
         .menu-title { font-size: 16px; font-weight: bold; color: #0a1f44; margin-bottom: 5px; }
-        
-        /* 텍스트 줄바꿈 최적화를 위한 line-height 조정 */
         .menu-desc { font-size: 12px; color: #64748b; line-height: 1.5; word-break: keep-all; }
-        
         .footer-text { grid-column: 1 / -1; text-align: center; margin-top: 20px; font-weight: bold; color: #94a3b8; font-size: 13px; border-top: 1px solid #e2e8f0; padding-top: 20px; }
 
         .btn-back { position: absolute; top: 30px; left: 30px; background: none; border: none; color: #64748b; font-weight: bold; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
@@ -58,6 +55,8 @@
         .preassign-row { display: flex; align-items: center; margin-bottom: 6px; background: #f8fafc; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; }
         .preassign-label { width: 45px; font-weight: bold; color: #0a1f44; font-size: 13px; text-align: center; flex-shrink: 0; }
         .preassign-inputs { display: grid; gap: 6px; flex: 1; }
+        .group-inputs { grid-template-columns: repeat(5, 1fr); }
+        .room-inputs { grid-template-columns: repeat(2, 1fr); }
         .preassign-input { width: 100%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 12px; text-align: center; box-sizing: border-box; margin: 0 !important; }
         
         .single-room-wrap { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 10px; }
@@ -78,6 +77,42 @@
         .btn-main { width: 100%; background-color: #0a1f44; color: white; border: none; padding: 16px; font-size: 16px; font-weight: bold; cursor: pointer; border-radius: 4px; margin-top: 15px; transition: 0.3s; }
         .btn-main:hover { background-color: #1e3a8a; }
         .status-msg { margin-top: 20px; text-align: center; font-weight: bold; font-size: 14px; color: #047857; background-color: #d1fae5; padding: 12px; border-radius: 4px; display: none; }
+
+        /* =========================================
+           📱 스마트폰 최적화 (반응형 웹 CSS)
+           ========================================= */
+        @media screen and (max-width: 600px) {
+            body { padding: 10px; }
+            .container { padding: 20px 15px; border-top-width: 6px; }
+            h1 { font-size: 20px; word-break: keep-all; line-height: 1.3; margin-top: 0; }
+            .subtitle { font-size: 12px; margin-bottom: 20px; }
+            .logo-img { max-width: 160px; }
+            
+            /* 뒤로 가기 버튼 겹침 해결 (글자 위로 분리 배치) */
+            .btn-back { position: static; margin-bottom: 20px; display: inline-flex; padding: 0; font-size: 15px; }
+
+            /* 1열 세로 배치 */
+            #main-menu { grid-template-columns: 1fr; gap: 15px; }
+            .menu-btn { padding: 25px 15px; }
+            .single-room-wrap { grid-template-columns: 1fr; gap: 10px; }
+            .ox-btn-wrap { grid-template-columns: 1fr; }
+
+            .form-section { padding: 15px; margin-bottom: 20px; }
+            .number-btn-wrap { gap: 5px; }
+            .num-btn { padding: 10px 0; font-size: 14px; }
+
+            /* 사전 입력칸 자동 줄바꿈 최적화 */
+            .preassign-row { flex-direction: column; align-items: flex-start; }
+            .preassign-label { width: 100%; text-align: left; margin-bottom: 8px; font-size: 14px; }
+            .group-inputs { grid-template-columns: repeat(3, 1fr); width: 100%; gap: 6px; } /* 3칸씩 자동 줄바꿈 */
+            .room-inputs { grid-template-columns: 1fr; width: 100%; gap: 6px; } /* 1칸씩 세로 배치 */
+
+            /* 부가세 계산기 찌그러짐 완벽 해결 (세로 스택) */
+            .vat-wrap { padding: 20px 15px; }
+            .vat-row { flex-direction: column; align-items: flex-start; border-bottom: none; padding-bottom: 0; margin-bottom: 20px; }
+            .vat-label { width: 100%; margin-bottom: 8px; font-size: 15px; }
+            .vat-input { width: 100% !important; font-size: 18px !important; }
+        }
     </style>
 </head>
 <body>
@@ -103,14 +138,12 @@
         <div class="menu-btn" onclick="showApp('app-room')">
             <div class="menu-icon">🏨</div>
             <div class="menu-title">2. 숙소 배정표 만들기</div>
-            <!-- 요청하신 대로 깔끔하게 2줄로 강제 줄바꿈 처리 -->
             <div class="menu-desc">2인 1실 자동매칭, 성별분리, 동실지정까지<br>가능한 자동화 툴</div>
         </div>
 
         <div class="menu-btn" onclick="showApp('app-vat')">
             <div class="menu-icon">🧮</div>
             <div class="menu-title">3. 실시간 부가세 계산기</div>
-            <!-- 요청하신 대로 깔끔하게 2줄로 강제 줄바꿈 처리 -->
             <div class="menu-desc">제안서 및 정산 작업 시 필수!<br>합계금액, 공급가액, 부가세 등 즉시 자동 연산</div>
         </div>
 
@@ -280,13 +313,13 @@
         document.getElementById('btnBack').style.display = 'none';
 
         if (pageId === 'main') {
-            document.getElementById('main-menu').style.display = 'grid';
+            document.getElementById('main-menu').style.display = 'grid'; // CSS @media가 제어함
             document.getElementById('mainLogo').style.display = 'block'; 
         } else {
             let targetApp = document.getElementById(pageId);
             if(targetApp) {
                 targetApp.style.display = 'block';
-                document.getElementById('btnBack').style.display = 'flex';
+                document.getElementById('btnBack').style.display = 'inline-flex';
             } else {
                 document.getElementById('main-menu').style.display = 'grid';
                 document.getElementById('mainLogo').style.display = 'block'; 
@@ -408,7 +441,7 @@
         for(let i=0; i<uiGroupCount; i++) {
             let row = document.createElement('div'); row.className = 'preassign-row';
             let label = document.createElement('div'); label.className = 'preassign-label'; label.innerText = `${i+1}조`; row.appendChild(label);
-            let inputWrap = document.createElement('div'); inputWrap.className = 'preassign-inputs'; inputWrap.style.gridTemplateColumns = 'repeat(5, 1fr)';
+            let inputWrap = document.createElement('div'); inputWrap.className = 'preassign-inputs group-inputs';
             for(let j=0; j<5; j++) { let inp = document.createElement('input'); inp.type = 'text'; inp.className = 'preassign-input'; inp.placeholder = '이름'; if (existingData[i] && existingData[i][j]) { inp.value = existingData[i][j]; } inputWrap.appendChild(inp); }
             row.appendChild(inputWrap); container.appendChild(row);
         }
@@ -482,7 +515,7 @@
         for(let i=0; i<10; i++) {
             let row = document.createElement('div'); row.className = 'preassign-row';
             let label = document.createElement('div'); label.className = 'preassign-label'; label.innerText = `객실${i+1}`; row.appendChild(label);
-            let inputWrap = document.createElement('div'); inputWrap.className = 'preassign-inputs'; inputWrap.style.gridTemplateColumns = 'repeat(2, 1fr)';
+            let inputWrap = document.createElement('div'); inputWrap.className = 'preassign-inputs room-inputs';
             for(let j=0; j<2; j++) { let inp = document.createElement('input'); inp.type = 'text'; inp.className = 'preassign-input room-pair'; inp.placeholder = '동실 대상자 이름'; inputWrap.appendChild(inp); }
             row.appendChild(inputWrap); container.appendChild(row);
         }
