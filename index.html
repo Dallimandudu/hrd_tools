@@ -4,13 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>K-Brain 오프라인 교육 자동화 솔루션</title>
+    <!-- 프리텐다드 웹 폰트 연동 -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        body { font-family: 'Malgun Gothic', sans-serif; background-color: #f4f6f9; padding: 40px 20px; color: #333; margin: 0; }
+        /* 시스템 전체 폰트를 프리텐다드로 변경 */
+        body { font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background-color: #f4f6f9; padding: 40px 20px; color: #333; margin: 0; }
         .container { max-width: 750px; margin: 0 auto; background: #ffffff; padding: 40px; border-radius: 4px; border-top: 8px solid #0a1f44; box-shadow: 0 10px 25px rgba(0,0,0,0.08); position: relative; }
         
-        h1 { color: #0a1f44; text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 5px; }
-        .subtitle { text-align: center; color: #666; font-size: 14px; margin-bottom: 15px; }
+        h1 { color: #0a1f44; text-align: center; font-size: 24px; font-weight: 800; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #666; font-size: 14px; margin-bottom: 15px; font-weight: 500; }
         .logo-wrap { text-align: center; margin-bottom: 30px; }
         .logo-img { max-width: 250px; height: auto; } 
         
@@ -18,80 +21,75 @@
         .menu-btn { display: flex; align-items: center; justify-content: center; flex-direction: column; background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 30px 20px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; text-align: center; }
         .menu-btn:hover { border-color: #0a1f44; background-color: #f1f5f9; transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.05); }
         .menu-icon { font-size: 40px; margin-bottom: 15px; }
-        .menu-title { font-size: 16px; font-weight: bold; color: #0a1f44; margin-bottom: 5px; }
-        .menu-desc { font-size: 12px; color: #64748b; line-height: 1.5; word-break: keep-all; }
-        .footer-text { grid-column: 1 / -1; text-align: center; margin-top: 20px; font-weight: bold; color: #94a3b8; font-size: 13px; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+        .menu-title { font-size: 16px; font-weight: 700; color: #0a1f44; margin-bottom: 5px; }
+        .menu-desc { font-size: 13px; color: #64748b; line-height: 1.5; word-break: keep-all; font-weight: 400; }
+        .footer-text { grid-column: 1 / -1; text-align: center; margin-top: 20px; font-weight: 600; color: #94a3b8; font-size: 13px; border-top: 1px solid #e2e8f0; padding-top: 20px; }
 
-        .btn-back { position: absolute; top: 30px; left: 30px; background: none; border: none; color: #64748b; font-weight: bold; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
+        .btn-back { position: absolute; top: 30px; left: 30px; background: none; border: none; color: #64748b; font-weight: 700; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
         .btn-back:hover { color: #0a1f44; }
 
         .form-section { background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 25px; border-radius: 4px; margin-bottom: 25px; }
-        label.section-title { font-weight: bold; color: #0a1f44; font-size: 15px; display: block; margin-bottom: 10px; }
-        .desc { font-size: 13px; color: #64748b; margin-bottom: 15px; line-height: 1.6; }
+        label.section-title { font-weight: 700; color: #0a1f44; font-size: 15px; display: block; margin-bottom: 10px; }
+        .desc { font-size: 13px; color: #64748b; margin-bottom: 15px; line-height: 1.6; font-weight: 400; }
         
-        .btn-template { background-color: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; padding: 10px; width: 100%; font-size: 14px; font-weight: bold; cursor: pointer; border-radius: 4px; transition: 0.2s; }
+        .btn-template { background-color: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; padding: 10px; width: 100%; font-size: 14px; font-weight: 700; cursor: pointer; border-radius: 4px; transition: 0.2s; font-family: inherit; }
         .btn-template:hover { background-color: #cbd5e1; }
         
         .drop-zone { border: 2px dashed #94a3b8; border-radius: 8px; padding: 20px; text-align: center; background-color: #ffffff; cursor: pointer; transition: all 0.3s ease; margin-bottom: 20px; }
         .drop-zone:hover, .drop-zone.dragover { border-color: #0a1f44; background-color: #f1f5f9; }
         .drop-zone p { margin: 0; font-size: 14px; color: #64748b; pointer-events: none; }
-        .drop-zone .file-name { font-weight: bold; color: #0a1f44; margin-top: 10px; display: none; }
+        .drop-zone .file-name { font-weight: 700; color: #0a1f44; margin-top: 10px; display: none; }
         
         .option-box { background: #ffffff; border: 1px solid #e2e8f0; padding: 15px; border-radius: 6px; margin-bottom: 15px; transition: 0.2s; }
         .option-box.active { border: 2px solid #0a1f44; background-color: #f8fafc; }
-        .option-title { font-size: 14px; font-weight: bold; color: #334155; margin-bottom: 5px; }
+        .option-title { font-size: 14px; font-weight: 700; color: #334155; margin-bottom: 5px; }
         
         .number-btn-wrap { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 10px; }
-        .num-btn { background-color: #fff; border: 1px solid #cbd5e1; padding: 10px 0; text-align: center; border-radius: 4px; cursor: pointer; font-weight: bold; color: #475569; transition: 0.2s; width: 100%; box-sizing: border-box; font-size:13px; }
+        .num-btn { background-color: #fff; border: 1px solid #cbd5e1; padding: 10px 0; text-align: center; border-radius: 4px; cursor: pointer; font-weight: 600; color: #475569; transition: 0.2s; width: 100%; box-sizing: border-box; font-size:14px; font-family: inherit; }
         .num-btn:hover { background-color: #f1f5f9; }
         .num-btn.active { background-color: #0a1f44; color: white; border-color: #0a1f44; }
         .ox-btn-wrap { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
 
         input[type="text"] { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; font-family: inherit; font-size: 13px; margin-top: 5px; }
         input[type="text"]:focus { border-color: #0a1f44; outline: none; }
-        input[type="text"]::placeholder { color: #94a3b8; }
+        input[type="text"]::placeholder { color: #94a3b8; font-family: inherit; }
         
         .preassign-container { margin-top: 10px; }
         .preassign-row { display: flex; align-items: center; margin-bottom: 6px; background: #f8fafc; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; }
-        .preassign-label { width: 45px; font-weight: bold; color: #0a1f44; font-size: 13px; text-align: center; flex-shrink: 0; }
+        .preassign-label { width: 45px; font-weight: 700; color: #0a1f44; font-size: 13px; text-align: center; flex-shrink: 0; }
         .preassign-inputs { display: grid; gap: 6px; flex: 1; }
         .group-inputs { grid-template-columns: repeat(5, 1fr); }
         .room-inputs { grid-template-columns: repeat(2, 1fr); }
-        .preassign-input { width: 100%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 12px; text-align: center; box-sizing: border-box; margin: 0 !important; }
+        .preassign-input { width: 100%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px; text-align: center; box-sizing: border-box; margin: 0 !important; font-family: inherit; }
         
         .single-room-wrap { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 10px; }
         .single-room-box { display: flex; align-items: center; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; padding: 5px; }
-        .single-room-box input { flex: 1; border: none; background: transparent; padding: 6px; font-size: 13px; margin: 0; }
+        .single-room-box input { flex: 1; border: none; background: transparent; padding: 6px; font-size: 13px; margin: 0; font-family: inherit; }
         .gender-toggle { display: flex; border: 1px solid #cbd5e1; border-radius: 4px; overflow: hidden; }
-        .gender-btn { padding: 6px 12px; font-size: 12px; font-weight: bold; cursor: pointer; background: #fff; color: #64748b; border: none; transition: 0.2s; }
+        .gender-btn { padding: 6px 12px; font-size: 13px; font-weight: 600; cursor: pointer; background: #fff; color: #64748b; border: none; transition: 0.2s; font-family: inherit; }
         .gender-btn.active { background: #0a1f44; color: #fff; }
 
         .vat-wrap { background: #fff; border: 2px solid #e2e8f0; border-radius: 8px; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         .vat-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; }
         .vat-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .vat-label { font-size: 16px; font-weight: bold; color: #334155; width: 150px; }
-        .vat-input { text-align: right; font-size: 20px !important; font-weight: bold; color: #0a1f44; border: 1px solid #cbd5e1; background: #f8fafc; padding: 12px !important; width: calc(100% - 170px) !important; border-radius: 6px; }
+        .vat-label { font-size: 16px; font-weight: 700; color: #334155; width: 150px; }
+        .vat-input { text-align: right; font-size: 20px !important; font-weight: 700; color: #0a1f44; border: 1px solid #cbd5e1; background: #f8fafc; padding: 12px !important; width: calc(100% - 170px) !important; border-radius: 6px; font-family: inherit; }
         .vat-input:focus { background: #ffffff; border-color: #0a1f44; }
         .vat-input.readonly { background: #e2e8f0; border-color: #cbd5e1; color: #64748b; }
 
-        .btn-main { width: 100%; background-color: #0a1f44; color: white; border: none; padding: 16px; font-size: 16px; font-weight: bold; cursor: pointer; border-radius: 4px; margin-top: 15px; transition: 0.3s; }
+        .btn-main { width: 100%; background-color: #0a1f44; color: white; border: none; padding: 16px; font-size: 16px; font-weight: 700; cursor: pointer; border-radius: 4px; margin-top: 15px; transition: 0.3s; font-family: inherit; }
         .btn-main:hover { background-color: #1e3a8a; }
-        .status-msg { margin-top: 20px; text-align: center; font-weight: bold; font-size: 14px; color: #047857; background-color: #d1fae5; padding: 12px; border-radius: 4px; display: none; }
+        .status-msg { margin-top: 20px; text-align: center; font-weight: 700; font-size: 14px; color: #047857; background-color: #d1fae5; padding: 12px; border-radius: 4px; display: none; }
 
-        /* =========================================
-           📱 스마트폰 최적화 (반응형 웹 CSS)
-           ========================================= */
         @media screen and (max-width: 600px) {
             body { padding: 10px; }
             .container { padding: 20px 15px; border-top-width: 6px; }
             h1 { font-size: 20px; word-break: keep-all; line-height: 1.3; margin-top: 0; }
-            .subtitle { font-size: 12px; margin-bottom: 20px; }
+            .subtitle { font-size: 13px; margin-bottom: 20px; }
             .logo-img { max-width: 160px; }
             
-            /* 뒤로 가기 버튼 겹침 해결 (글자 위로 분리 배치) */
             .btn-back { position: static; margin-bottom: 20px; display: inline-flex; padding: 0; font-size: 15px; }
 
-            /* 1열 세로 배치 */
             #main-menu { grid-template-columns: 1fr; gap: 15px; }
             .menu-btn { padding: 25px 15px; }
             .single-room-wrap { grid-template-columns: 1fr; gap: 10px; }
@@ -101,13 +99,11 @@
             .number-btn-wrap { gap: 5px; }
             .num-btn { padding: 10px 0; font-size: 14px; }
 
-            /* 사전 입력칸 자동 줄바꿈 최적화 */
             .preassign-row { flex-direction: column; align-items: flex-start; }
             .preassign-label { width: 100%; text-align: left; margin-bottom: 8px; font-size: 14px; }
-            .group-inputs { grid-template-columns: repeat(3, 1fr); width: 100%; gap: 6px; } /* 3칸씩 자동 줄바꿈 */
-            .room-inputs { grid-template-columns: 1fr; width: 100%; gap: 6px; } /* 1칸씩 세로 배치 */
+            .group-inputs { grid-template-columns: repeat(3, 1fr); width: 100%; gap: 6px; } 
+            .room-inputs { grid-template-columns: 1fr; width: 100%; gap: 6px; } 
 
-            /* 부가세 계산기 찌그러짐 완벽 해결 (세로 스택) */
             .vat-wrap { padding: 20px 15px; }
             .vat-row { flex-direction: column; align-items: flex-start; border-bottom: none; padding-bottom: 0; margin-bottom: 20px; }
             .vat-label { width: 100%; margin-bottom: 8px; font-size: 15px; }
@@ -127,7 +123,6 @@
         <img src="★★★.png" alt="K-Brain Logo" class="logo-img" onerror="this.style.display='none'">
     </div>
     
-    <!-- 첫 화면: 4개 메뉴 선택 -->
     <div id="main-menu">
         <div class="menu-btn" onclick="showApp('app-group')">
             <div class="menu-icon">👥</div>
@@ -302,7 +297,6 @@
 </div>
 
 <script>
-    // --- 화면 렌더링 및 History API (뒤로가기 지원) 로직 ---
     function renderPage(pageId) {
         document.getElementById('main-menu').style.display = 'none';
         document.getElementById('mainLogo').style.display = 'none'; 
@@ -313,7 +307,7 @@
         document.getElementById('btnBack').style.display = 'none';
 
         if (pageId === 'main') {
-            document.getElementById('main-menu').style.display = 'grid'; // CSS @media가 제어함
+            document.getElementById('main-menu').style.display = 'grid'; 
             document.getElementById('mainLogo').style.display = 'block'; 
         } else {
             let targetApp = document.getElementById(pageId);
@@ -345,7 +339,6 @@
         }
     });
 
-    // --- [3] 부가세 계산기 로직 ---
     function formatNumber(num) { return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
     function unformatNumber(str) { return parseInt(str.replace(/[^0-9]/g, '')) || 0; }
 
@@ -373,9 +366,6 @@
         }
     }
 
-    /* -------------------------------------------------------------------------
-       기존 조배정(App 1) 및 숙소배정(App 2) 로직
-       ------------------------------------------------------------------------- */
     const maleKeywords = ['남성', '남', '남자', 'M', 'MALE'];
     const femaleKeywords = ['여성', '여', '여자', 'F', 'FEMALE'];
 
@@ -415,7 +405,6 @@
         updateGroupPreassignUI(); initRoomPreassignUI();
     }
 
-    // App 1 로직
     let currentMode = 'groupCount', selectedGroupCount = 5, selectedGroupSize = 0, considerGender = true;
     const dropZoneGroup = document.getElementById('dropZoneGroup'), fileInputGroup = document.getElementById('excelFileGroup'), fileNameDisplayGroup = document.getElementById('fileNameDisplayGroup');
     dropZoneGroup.addEventListener('click', () => fileInputGroup.click());
@@ -500,7 +489,6 @@
         reader.readAsArrayBuffer(fileInputGroup.files[0]);
     }
 
-    // App 2 로직
     let singleRoomGender = { 1: 'M', 2: 'M' }; 
     function toggleSingleGender(id, gender) { singleRoomGender[id] = gender; document.getElementById(`sr${id}-M`).classList.toggle('active', gender === 'M'); document.getElementById(`sr${id}-F`).classList.toggle('active', gender === 'F'); }
     const dropZoneRoom = document.getElementById('dropZoneRoom'), fileInputRoom = document.getElementById('excelFileRoom'), fileNameDisplayRoom = document.getElementById('fileNameDisplayRoom');
