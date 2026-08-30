@@ -66,7 +66,6 @@
         .btn-add { background: transparent; border: 1px dashed #0a1f44; color: #0a1f44; padding: 12px; width: 100%; border-radius: 4px; font-weight: 700; cursor: pointer; transition: 0.2s; font-family: inherit; margin-top: 10px; }
         .btn-add:hover { background: #f8fafc; }
         
-        /* 객실 개별 삭제 버튼 스타일 */
         .btn-remove { background: none; border: none; cursor: pointer; padding: 0 0 0 10px; font-size: 16px; color: #cbd5e1; transition: 0.2s; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         .btn-remove:hover { color: #ef4444; transform: scale(1.1); }
 
@@ -107,14 +106,12 @@
             .number-btn-wrap { gap: 5px; }
             .num-btn { padding: 10px 0; font-size: 14px; }
 
-            .preassign-row { flex-wrap: wrap; padding-right: 40px; } /* 삭제 버튼 공간 확보 */
+            .preassign-row { flex-wrap: wrap; padding-right: 40px; } 
             .drag-handle { margin-bottom: 8px; }
             .preassign-label { margin-bottom: 8px; text-align: left; width: auto; flex: 1; font-size: 14px; }
             .preassign-inputs { width: 100%; flex: none; }
             .group-inputs { grid-template-columns: repeat(3, 1fr); gap: 6px; } 
             .room-inputs { grid-template-columns: 1fr; gap: 6px; } 
-            
-            /* 모바일 삭제 버튼 위치 최적화 */
             .btn-remove { position: absolute; right: 5px; top: 5px; padding: 10px; }
 
             .vat-wrap { padding: 20px 15px; }
@@ -136,7 +133,6 @@
         <img src="★★★.png" alt="K-Brain Logo" class="logo-img" onerror="this.style.display='none'">
     </div>
     
-    <!-- 첫 화면: 4개 메뉴 선택 -->
     <div id="main-menu">
         <div class="menu-btn" onclick="showApp('app-group')">
             <div class="menu-icon">👥</div>
@@ -159,7 +155,7 @@
         <div class="menu-btn" onclick="showApp('app-survey')">
             <div class="menu-icon">📊</div>
             <div class="menu-title">4. 만족도 조사 변환기</div>
-            <div class="menu-desc">(업데이트 예정)<br>텍스트형 설문 응답을 5점 척도 점수로 자동 변환</div>
+            <div class="menu-desc">구글폼 원본 데이터를 넣으면 5점 척도 변환<br>및 세로형(Unpivot) 구조로 즉시 가공</div>
         </div>
 
         <div class="footer-text">K-Brain HRD 사업실_사업3팀 운영 자동화 TOOL</div>
@@ -303,11 +299,31 @@
     <!-- 앱 4: 만족도 조사 변환기 -->
     <div id="app-survey" style="display:none;">
         <div class="form-section">
-            <label class="section-title">📊 만족도 조사 5점 척도 변환기</label>
-            <div class="desc" style="text-align: center; padding: 40px 0; color: #0a1f44; font-size: 16px; font-weight: bold;">
-                🛠️ 현재 시스템 고도화 작업이 진행 중입니다.<br>다음 업데이트를 기대해 주세요!
+            <label class="section-title">01. 구글 폼 결과 엑셀 업로드</label>
+            <div class="desc">구글 폼에 결과값을 스프레드 시트에 옮겨 엑셀파일로 다운받은 파일을 그대로 넣어주세요.</div>
+            
+            <div class="drop-zone" id="dropZoneSurvey">
+                <p>📁 이 곳으로 만족도 조사 결과 엑셀 파일을 끌어오거나 클릭해 주세요.</p>
+                <p class="file-name" id="fileNameDisplaySurvey"></p>
+                <input type="file" id="excelFileSurvey" accept=".xlsx, .xls, .csv" style="display:none;" />
+            </div>
+            
+            <div class="option-box">
+                <div class="option-title">💡 데이터 변환 규칙 안내</div>
+                <div class="desc" style="margin-bottom:0;">
+                    1. <b>텍스트 응답 점수화:</b> '매우 높음(5점) ~ 매우 낮음(1점)' 등 5점 척도가 숫자로 자동 변환됩니다.<br>
+                    2. <b>세로형(Unpivot) 변환:</b> 가로로 나열된 응답이 '학습자별 - 문항별 - 점수' 형태의 세로 목록으로 재배치됩니다.<br>
+                    3. <b>익명화 적용:</b> '타임스탬프' 열은 삭제되며, '1번 학습자', '2번 학습자' 형태로 번호가 자동 부여됩니다.
+                </div>
+            </div>
+
+            <div class="option-box">
+                <div class="option-title">02. 결과 파일명 설정 (선택사항)</div>
+                <input type="text" id="outputFileNameSurvey" placeholder="예: 26년_조직활성화_만족도결과_가공본" />
             </div>
         </div>
+        <button class="btn-main" onclick="processSurvey()">만족도 데이터 1초 만에 자동 변환하기 📊</button>
+        <div id="statusSurvey" class="status-msg">✅ 만족도 데이터 변환 완료! 세로형 결과 파일이 다운로드되었습니다.</div>
     </div>
 </div>
 
@@ -335,7 +351,7 @@
                 ws[cellRef].s = (R === 0) ? headerStyle : cellStyle;
             }
         }
-        ws['!cols'] = Array(range.e.c + 1).fill({ wch: 16 });
+        if(!ws['!cols']) ws['!cols'] = Array(range.e.c + 1).fill({ wch: 16 });
     }
 
     function renderPage(pageId) {
@@ -407,6 +423,14 @@
             let btnS = document.createElement('div'); btnS.className = 'num-btn btn-size'; btnS.innerText = i; btnS.id = 'btn-size-' + i; btnS.onclick = (e) => { e.stopPropagation(); selectNumber('size', i); }; sizeContainer.appendChild(btnS);
         }
         updateGroupPreassignUI(); initRoomPreassignUI();
+
+        // 4번 앱 설문 업로드 드래그 앤 드롭 세팅
+        const dropZoneSurvey = document.getElementById('dropZoneSurvey'), fileInputSurvey = document.getElementById('excelFileSurvey'), fileNameDisplaySurvey = document.getElementById('fileNameDisplaySurvey');
+        dropZoneSurvey.addEventListener('click', () => fileInputSurvey.click());
+        fileInputSurvey.addEventListener('change', function() { if(this.files.length>0){ dropZoneSurvey.querySelector('p:first-child').style.display='none'; fileNameDisplaySurvey.style.display='block'; fileNameDisplaySurvey.innerHTML=`✅ 업로드 완료: ${this.files[0].name}`; } });
+        dropZoneSurvey.addEventListener('dragover', (e) => { e.preventDefault(); dropZoneSurvey.classList.add('dragover'); });
+        dropZoneSurvey.addEventListener('dragleave', (e) => { e.preventDefault(); dropZoneSurvey.classList.remove('dragover'); });
+        dropZoneSurvey.addEventListener('drop', (e) => { e.preventDefault(); dropZoneSurvey.classList.remove('dragover'); if (e.dataTransfer.files.length > 0) { fileInputSurvey.files = e.dataTransfer.files; dropZoneSurvey.querySelector('p:first-child').style.display='none'; fileNameDisplaySurvey.style.display='block'; fileNameDisplaySurvey.innerHTML=`✅ 업로드 완료: ${e.dataTransfer.files[0].name}`; } });
     }
 
     let currentMode = 'groupCount', selectedGroupCount = 5, selectedGroupSize = 0, considerGender = true;
@@ -506,48 +530,30 @@
     dropZoneRoom.addEventListener('dragleave', (e) => { e.preventDefault(); dropZoneRoom.classList.remove('dragover'); });
     dropZoneRoom.addEventListener('drop', (e) => { e.preventDefault(); dropZoneRoom.classList.remove('dragover'); if (e.dataTransfer.files.length > 0) { fileInputRoom.files = e.dataTransfer.files; dropZoneRoom.querySelector('p:first-child').style.display='none'; fileNameDisplayRoom.style.display='block'; fileNameDisplayRoom.innerHTML=`✅ 업로드 완료: ${e.dataTransfer.files[0].name}`; } });
 
-    // 초기 5칸 세팅 및 드래그 활성화
     function initRoomPreassignUI() {
         const container = document.getElementById('preassign-container-room'); container.innerHTML = '';
         for(let i=0; i<5; i++) { container.appendChild(createRoomRow(i+1)); }
         makeSortable('preassign-container-room');
     }
 
-    // 객실 추가 버튼 기능
     function addRoomRow() {
         const container = document.getElementById('preassign-container-room');
         const count = container.querySelectorAll('.preassign-row').length;
         container.appendChild(createRoomRow(count + 1));
     }
 
-    // 객실 행(Row) 생성 및 [삭제 버튼] 추가 로직
     function createRoomRow(index) {
         const row = document.createElement('div'); row.className = 'preassign-row'; row.draggable = true;
-        
-        const handle = document.createElement('div'); handle.className = 'drag-handle'; handle.innerHTML = '≡'; 
-        row.appendChild(handle);
-        
-        const label = document.createElement('div'); label.className = 'preassign-label'; label.innerText = `객실${index}`; 
-        row.appendChild(label);
-        
+        const handle = document.createElement('div'); handle.className = 'drag-handle'; handle.innerHTML = '≡'; row.appendChild(handle);
+        const label = document.createElement('div'); label.className = 'preassign-label'; label.innerText = `객실${index}`; row.appendChild(label);
         const inputWrap = document.createElement('div'); inputWrap.className = 'preassign-inputs room-inputs';
         for(let j=0; j<2; j++) { let inp = document.createElement('input'); inp.type = 'text'; inp.className = 'preassign-input room-pair'; inp.placeholder = '동실 대상자 이름'; inputWrap.appendChild(inp); }
         row.appendChild(inputWrap); 
-        
-        // 개별 객실 삭제 버튼 ➖
-        const removeBtn = document.createElement('button');
-        removeBtn.className = 'btn-remove';
-        removeBtn.innerHTML = '➖';
-        removeBtn.onclick = function() {
-            row.remove();
-            updateRoomLabels(); // 삭제 후 번호표(객실1, 객실2...) 예쁘게 자동 재정렬
-        };
-        row.appendChild(removeBtn);
-
-        return row;
+        const removeBtn = document.createElement('button'); removeBtn.className = 'btn-remove'; removeBtn.innerHTML = '➖';
+        removeBtn.onclick = function() { row.remove(); updateRoomLabels(); };
+        row.appendChild(removeBtn); return row;
     }
 
-    // 드래그 앤 드롭 핵심 알고리즘
     function makeSortable(containerId) {
         const container = document.getElementById(containerId); let draggingEl;
         container.addEventListener('touchstart', (e) => { if (!e.target.classList.contains('drag-handle')) return; draggingEl = e.target.closest('.preassign-row'); draggingEl.classList.add('dragging'); }, {passive: true});
@@ -618,6 +624,82 @@
             } catch (error) { alert("오류가 발생했습니다."); }
         };
         reader.readAsArrayBuffer(fileInputRoom.files[0]);
+    }
+
+    // 4번 앱: 만족도 조사 처리 로직
+    function processSurvey() {
+        const fileInputSurvey = document.getElementById('excelFileSurvey');
+        if (!fileInputSurvey.files.length) { alert('만족도 조사 결과 엑셀 파일을 업로드해 주세요.'); return; }
+        
+        const reader = new FileReader(); 
+        const statusDiv = document.getElementById('statusSurvey');
+        
+        reader.onload = function(e) {
+            try {
+                const data = new Uint8Array(e.target.result); 
+                const workbook = XLSX.read(data, {type: 'array'});
+                const firstSheetName = workbook.SheetNames[0];
+                const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheetName], { defval: "" });
+                
+                if (jsonData.length === 0) {
+                    alert("업로드하신 엑셀 파일에 데이터가 없습니다.");
+                    return;
+                }
+
+                let resultData = [];
+                
+                jsonData.forEach((row, index) => {
+                    let studentName = (index + 1) + '번 학습자';
+                    
+                    for (let key in row) {
+                        // 타임스탬프 열 필터링 (대소문자 및 띄어쓰기 무관)
+                        if (key.replace(/\s+/g, '').includes('타임스탬프') || key.toLowerCase().includes('timestamp')) {
+                            continue;
+                        }
+                        
+                        let originalValue = row[key];
+                        let convertedValue = originalValue;
+                        
+                        // 5점 척도 텍스트 -> 숫자로 자동 변환 (정규식 활용)
+                        if (typeof originalValue === 'string') {
+                            let s = originalValue.trim();
+                            if (/^(매우 높음|매우 그렇다|매우 만족)$/.test(s)) convertedValue = 5;
+                            else if (/^(높음|그렇다|만족)$/.test(s)) convertedValue = 4;
+                            else if (/^(보통|보통이다)$/.test(s)) convertedValue = 3;
+                            else if (/^(낮음|그렇지 않다|불만족)$/.test(s)) convertedValue = 2;
+                            else if (/^(매우 낮음|전혀 그렇지 않다|매우 불만족)$/.test(s)) convertedValue = 1;
+                        }
+                        
+                        // 세로형 구조로 데이터 푸시
+                        resultData.push({
+                            '학습자': studentName,
+                            '문항': key,
+                            '응답결과': convertedValue
+                        });
+                    }
+                });
+                
+                const wb = XLSX.utils.book_new(); 
+                const wsResult = XLSX.utils.json_to_sheet(resultData); 
+                
+                // 엑셀 디자인 적용
+                applyStyle(wsResult);
+                
+                // 설문 문항 내용이 기므로 2번째 열(문항) 폭을 넓게 설정
+                wsResult['!cols'] = [ {wch: 15}, {wch: 70}, {wch: 15} ];
+                
+                XLSX.utils.book_append_sheet(wb, wsResult, "1. 설문가공결과(세로형)");
+                
+                let fName = document.getElementById('outputFileNameSurvey').value.trim() || 'K-Brain_만족도조사_변환결과';
+                XLSX.writeFile(wb, fName + '.xlsx'); 
+                
+                statusDiv.style.display = 'block'; 
+                setTimeout(() => { statusDiv.style.display = 'none'; }, 5000);
+            } catch (error) { 
+                alert("파일을 처리하는 중 오류가 발생했습니다. 구글폼 다운로드 원본 파일이 맞는지 확인해주세요."); 
+            }
+        };
+        reader.readAsArrayBuffer(fileInputSurvey.files[0]);
     }
 </script>
 </body>
