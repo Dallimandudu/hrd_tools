@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>K-Brain 오프라인 교육 자동화 솔루션</title>
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
-    
-    <!-- 기존 라이브러리 대신 '엑셀 디자인(Style)'이 지원되는 특수 라이브러리로 교체 -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
-    
     <style>
         body { font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background-color: #f4f6f9; padding: 40px 20px; color: #333; margin: 0; }
         .container { max-width: 750px; margin: 0 auto; background: #ffffff; padding: 40px; border-radius: 4px; border-top: 8px solid #0a1f44; box-shadow: 0 10px 25px rgba(0,0,0,0.08); position: relative; }
@@ -56,7 +53,7 @@
         input[type="text"]::placeholder { color: #94a3b8; font-family: inherit; }
         
         .preassign-container { margin-top: 10px; }
-        .preassign-row { display: flex; align-items: center; margin-bottom: 6px; background: #f8fafc; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .preassign-row { display: flex; align-items: center; margin-bottom: 6px; background: #f8fafc; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; transition: transform 0.2s ease, box-shadow 0.2s ease; position: relative; }
         .preassign-label { width: 45px; font-weight: 700; color: #0a1f44; font-size: 13px; text-align: center; flex-shrink: 0; }
         .preassign-inputs { display: grid; gap: 6px; flex: 1; }
         .group-inputs { grid-template-columns: repeat(5, 1fr); }
@@ -68,6 +65,10 @@
         .preassign-row.dragging { opacity: 0.6; background: #e2e8f0; border: 1px dashed #0a1f44; transform: scale(1.02); box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 10; }
         .btn-add { background: transparent; border: 1px dashed #0a1f44; color: #0a1f44; padding: 12px; width: 100%; border-radius: 4px; font-weight: 700; cursor: pointer; transition: 0.2s; font-family: inherit; margin-top: 10px; }
         .btn-add:hover { background: #f8fafc; }
+        
+        /* 객실 개별 삭제 버튼 스타일 */
+        .btn-remove { background: none; border: none; cursor: pointer; padding: 0 0 0 10px; font-size: 16px; color: #cbd5e1; transition: 0.2s; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .btn-remove:hover { color: #ef4444; transform: scale(1.1); }
 
         .single-room-wrap { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 10px; }
         .single-room-box { display: flex; align-items: center; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; padding: 5px; }
@@ -106,12 +107,15 @@
             .number-btn-wrap { gap: 5px; }
             .num-btn { padding: 10px 0; font-size: 14px; }
 
-            .preassign-row { flex-wrap: wrap; }
+            .preassign-row { flex-wrap: wrap; padding-right: 40px; } /* 삭제 버튼 공간 확보 */
             .drag-handle { margin-bottom: 8px; }
             .preassign-label { margin-bottom: 8px; text-align: left; width: auto; flex: 1; font-size: 14px; }
             .preassign-inputs { width: 100%; flex: none; }
             .group-inputs { grid-template-columns: repeat(3, 1fr); gap: 6px; } 
             .room-inputs { grid-template-columns: 1fr; gap: 6px; } 
+            
+            /* 모바일 삭제 버튼 위치 최적화 */
+            .btn-remove { position: absolute; right: 5px; top: 5px; padding: 10px; }
 
             .vat-wrap { padding: 20px 15px; }
             .vat-row { flex-direction: column; align-items: flex-start; border-bottom: none; padding-bottom: 0; margin-bottom: 20px; }
@@ -132,6 +136,7 @@
         <img src="★★★.png" alt="K-Brain Logo" class="logo-img" onerror="this.style.display='none'">
     </div>
     
+    <!-- 첫 화면: 4개 메뉴 선택 -->
     <div id="main-menu">
         <div class="menu-btn" onclick="showApp('app-group')">
             <div class="menu-icon">👥</div>
@@ -236,6 +241,7 @@
             <div class="option-box">
                 <div class="option-title">2. 특정 인원 2인 1실 사전 배정 (선택사항)</div>
                 <div class="desc" style="margin-bottom:0;">반드시 같은 방을 써야 하는 2명이 있다면 아래 칸에 이름을 적어주세요.<br><span style="color:#0a1f44; font-weight:bold;">(≡ 핸들을 위아래로 끌어서 순서를 변경할 수 있습니다)</span></div>
+                
                 <div id="preassign-container-room" class="preassign-container"></div>
                 <button type="button" class="btn-add" onclick="addRoomRow()">➕ 객실 추가</button>
             </div>
@@ -306,7 +312,6 @@
 </div>
 
 <script>
-    // --- 엑셀 스타일 적용 헬퍼 함수 (고급 K-Brain 테마) ---
     function applyStyle(ws) {
         if (!ws['!ref']) return;
         const range = XLSX.utils.decode_range(ws['!ref']);
@@ -385,7 +390,7 @@
             { '이름': '박교육', '성별': '', '나이': 32, '부서': '공공사업부', '휴대폰번호': '010-1111-2222' } 
         ];
         const ws = XLSX.utils.json_to_sheet(templateData);
-        applyStyle(ws); // 스타일 적용
+        applyStyle(ws);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "명단양식");
         XLSX.writeFile(wb, 'K-Brain_연수생_표준명단양식.xlsx');
@@ -480,15 +485,10 @@
                         summaryData.push({ '조': (index + 1) + '조', '총 인원': group.length + '명', '남성': (group.length - fCount) + '명', '여성': fCount + '명', '평균 연령': avgAge + '세' });
                     }
                 });
-                
-                // 결과물에도 스타일 적용
                 const wb = XLSX.utils.book_new(); 
                 const wsSummary = XLSX.utils.json_to_sheet(summaryData); applyStyle(wsSummary);
                 const wsResult = XLSX.utils.json_to_sheet(resultData); applyStyle(wsResult);
-                
-                XLSX.utils.book_append_sheet(wb, wsSummary, "1. 조별_통계_요약"); 
-                XLSX.utils.book_append_sheet(wb, wsResult, "2. 조배정_상세결과");
-                
+                XLSX.utils.book_append_sheet(wb, wsSummary, "1. 조별_통계_요약"); XLSX.utils.book_append_sheet(wb, wsResult, "2. 조배정_상세결과");
                 let fName = document.getElementById('outputFileNameGroup').value.trim() || 'K-Brain_오프라인교육_조배정표';
                 XLSX.writeFile(wb, fName + '.xlsx'); statusDiv.style.display = 'block'; setTimeout(() => { statusDiv.style.display = 'none'; }, 5000);
             } catch (err) { alert("오류가 발생했습니다."); }
@@ -506,27 +506,48 @@
     dropZoneRoom.addEventListener('dragleave', (e) => { e.preventDefault(); dropZoneRoom.classList.remove('dragover'); });
     dropZoneRoom.addEventListener('drop', (e) => { e.preventDefault(); dropZoneRoom.classList.remove('dragover'); if (e.dataTransfer.files.length > 0) { fileInputRoom.files = e.dataTransfer.files; dropZoneRoom.querySelector('p:first-child').style.display='none'; fileNameDisplayRoom.style.display='block'; fileNameDisplayRoom.innerHTML=`✅ 업로드 완료: ${e.dataTransfer.files[0].name}`; } });
 
+    // 초기 5칸 세팅 및 드래그 활성화
     function initRoomPreassignUI() {
         const container = document.getElementById('preassign-container-room'); container.innerHTML = '';
         for(let i=0; i<5; i++) { container.appendChild(createRoomRow(i+1)); }
         makeSortable('preassign-container-room');
     }
 
+    // 객실 추가 버튼 기능
     function addRoomRow() {
         const container = document.getElementById('preassign-container-room');
         const count = container.querySelectorAll('.preassign-row').length;
         container.appendChild(createRoomRow(count + 1));
     }
 
+    // 객실 행(Row) 생성 및 [삭제 버튼] 추가 로직
     function createRoomRow(index) {
         const row = document.createElement('div'); row.className = 'preassign-row'; row.draggable = true;
-        const handle = document.createElement('div'); handle.className = 'drag-handle'; handle.innerHTML = '≡'; row.appendChild(handle);
-        const label = document.createElement('div'); label.className = 'preassign-label'; label.innerText = `객실${index}`; row.appendChild(label);
+        
+        const handle = document.createElement('div'); handle.className = 'drag-handle'; handle.innerHTML = '≡'; 
+        row.appendChild(handle);
+        
+        const label = document.createElement('div'); label.className = 'preassign-label'; label.innerText = `객실${index}`; 
+        row.appendChild(label);
+        
         const inputWrap = document.createElement('div'); inputWrap.className = 'preassign-inputs room-inputs';
         for(let j=0; j<2; j++) { let inp = document.createElement('input'); inp.type = 'text'; inp.className = 'preassign-input room-pair'; inp.placeholder = '동실 대상자 이름'; inputWrap.appendChild(inp); }
-        row.appendChild(inputWrap); return row;
+        row.appendChild(inputWrap); 
+        
+        // 개별 객실 삭제 버튼 ➖
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'btn-remove';
+        removeBtn.innerHTML = '➖';
+        removeBtn.onclick = function() {
+            row.remove();
+            updateRoomLabels(); // 삭제 후 번호표(객실1, 객실2...) 예쁘게 자동 재정렬
+        };
+        row.appendChild(removeBtn);
+
+        return row;
     }
 
+    // 드래그 앤 드롭 핵심 알고리즘
     function makeSortable(containerId) {
         const container = document.getElementById(containerId); let draggingEl;
         container.addEventListener('touchstart', (e) => { if (!e.target.classList.contains('drag-handle')) return; draggingEl = e.target.closest('.preassign-row'); draggingEl.classList.add('dragging'); }, {passive: true});
@@ -588,17 +609,12 @@
                 let uniqueMaleRooms = new Set(), uniqueFemaleRooms = new Set(), uniqueUnknownRooms = new Set();
                 roomResults.forEach(r => { let cat = r['객실구분']; if (cat === '여자') uniqueFemaleRooms.add(r['객실명']); else if (cat === '남자') uniqueMaleRooms.add(r['객실명']); else uniqueUnknownRooms.add(r['객실명']); });
                 let summaryData = [{ '학습자 총원': jsonData.length + '명', '남성 인원': totalMales + '명', '여성 인원': totalFemales + '명', '성별미상 인원': totalUnknowns + '명', '남성 배정 객실 (전체)': uniqueMaleRooms.size + '개', '여성 배정 객실 (전체)': uniqueFemaleRooms.size + '개', '총 필요 객실': (uniqueMaleRooms.size + uniqueFemaleRooms.size + uniqueUnknownRooms.size) + '개' }];
-                
-                // 결과물에도 스타일 적용
-                const wb = XLSX.utils.book_new(); 
+                const newWorkbook = XLSX.utils.book_new(); 
                 const wsSummary = XLSX.utils.json_to_sheet(summaryData); applyStyle(wsSummary);
                 const wsResult = XLSX.utils.json_to_sheet(roomResults); applyStyle(wsResult);
-                
-                XLSX.utils.book_append_sheet(wb, wsSummary, "1. 숙소배정_통계_요약"); 
-                XLSX.utils.book_append_sheet(wb, wsResult, "2. 숙소배정_상세결과");
-                
+                XLSX.utils.book_append_sheet(wb, wsSummary, "1. 숙소배정_통계_요약"); XLSX.utils.book_append_sheet(wb, wsResult, "2. 숙소배정_상세결과");
                 let fName = document.getElementById('outputFileNameRoom').value.trim() || 'K-Brain_오프라인교육_숙소배정표';
-                XLSX.writeFile(wb, fName + '.xlsx'); statusDiv.style.display = 'block'; setTimeout(() => { statusDiv.style.display = 'none'; }, 5000);
+                XLSX.writeFile(newWorkbook, fName + '.xlsx'); statusDiv.style.display = 'block'; setTimeout(() => { statusDiv.style.display = 'none'; }, 5000);
             } catch (error) { alert("오류가 발생했습니다."); }
         };
         reader.readAsArrayBuffer(fileInputRoom.files[0]);
