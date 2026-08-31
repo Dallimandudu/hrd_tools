@@ -10,6 +10,10 @@
         body { font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background-color: #f4f6f9; padding: 40px 20px; color: #333; margin: 0; }
         .container { max-width: 750px; margin: 0 auto; background: #ffffff; padding: 40px; border-radius: 4px; border-top: 8px solid #0a1f44; box-shadow: 0 10px 25px rgba(0,0,0,0.08); position: relative; }
         
+        /* 상단 로고 스타일 추가 */
+        .top-logo-wrap { text-align: center; margin-bottom: 20px; }
+        .top-logo-img { max-width: 200px; height: auto; }
+
         h1 { color: #0a1f44; text-align: center; font-size: 24px; font-weight: 800; margin-bottom: 5px; }
         .subtitle { text-align: center; color: #666; font-size: 14px; margin-bottom: 30px; font-weight: 500; }
         
@@ -25,13 +29,11 @@
         .menu-title { font-size: 16px; font-weight: 700; color: #0a1f44; margin-bottom: 5px; }
         .menu-desc { font-size: 13px; color: #64748b; line-height: 1.5; word-break: keep-all; font-weight: 400; }
 
-        /* 하단(Footer) 디자인 최적화 */
         .main-footer { grid-column: 1 / -1; text-align: center; margin-top: 20px; padding-top: 30px; border-top: 1px solid #e2e8f0; display: flex; flex-direction: column; align-items: center; gap: 12px; }
         .footer-logo { max-width: 140px; height: auto; opacity: 0.4; filter: grayscale(100%); transition: 0.3s ease; }
         .footer-logo:hover { opacity: 1; filter: grayscale(0%); }
         .footer-text { font-weight: 600; color: #94a3b8; font-size: 13px; }
         
-        /* 버전 관리 뱃지 */
         .version-badge { display: inline-block; background-color: #f1f5f9; color: #64748b; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; border: 1px solid #e2e8f0; font-family: monospace; }
 
         .btn-back { position: absolute; top: 30px; left: 30px; background: none; border: none; color: #64748b; font-weight: 700; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
@@ -76,6 +78,7 @@
         .drag-handle { cursor: grab; padding: 0 10px 0 0; color: #94a3b8; font-size: 24px; line-height: 1; user-select: none; touch-action: none; display: flex; align-items: center; justify-content: center; }
         .drag-handle:active { cursor: grabbing; color: #0a1f44; }
         .preassign-row.dragging { opacity: 0.6; background: #e2e8f0; border: 1px dashed #0a1f44; transform: scale(1.02); box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 10; }
+        
         .btn-add { background: transparent; border: 1px dashed #0a1f44; color: #0a1f44; padding: 12px; width: 100%; border-radius: 4px; font-weight: 700; cursor: pointer; transition: 0.2s; font-family: inherit; margin-top: 10px; }
         .btn-add:hover { background: #f8fafc; }
         
@@ -108,6 +111,7 @@
             .container { padding: 20px 15px; border-top-width: 6px; }
             h1 { font-size: 20px; word-break: keep-all; line-height: 1.3; margin-top: 0; }
             .subtitle { font-size: 13px; margin-bottom: 20px; }
+            .top-logo-img { max-width: 160px; }
             .btn-back { position: static; margin-bottom: 20px; display: inline-flex; padding: 0; font-size: 15px; }
 
             #main-menu { grid-template-columns: 1fr; gap: 15px; }
@@ -138,6 +142,11 @@
 <div class="container">
     <button class="btn-back" id="btnBack" style="display:none;" onclick="showMainMenu()">◀ 메인으로</button>
     
+    <!-- 상단 컬러 로고 영역 -->
+    <div class="top-logo-wrap" id="topLogo">
+        <img src="★★★.png" alt="K-Brain Logo" class="top-logo-img" onerror="this.style.display='none'">
+    </div>
+    
     <h1>K-Brain 오프라인 교육 자동화 솔루션</h1>
     <div class="subtitle">K-Brain HRD Business Unit Work Efficiency Improvement System</div>
     
@@ -164,19 +173,19 @@
             <div class="menu-desc">구글폼 원본 데이터를 넣으면 5점 척도 변환<br>및 보고용 행렬바꿈(Transpose) 즉시 가공</div>
         </div>
         
-        <!-- 신규 5번 메뉴: LH SCP 전용 -->
+        <!-- 5번 메뉴: LH SCP 전용 -->
         <div class="menu-btn special-lh" onclick="showApp('app-lh')">
             <div class="menu-icon">🏢</div>
             <div class="menu-title">5. [LH SCP 전용] 숙박 및 조배정 원스톱 할당기</div>
             <div class="menu-desc"><b>"룸메이트는 무조건 같은 조원으로 편성!"</b><br>사전 객실 지정과 조 배정이 결합된 완벽한 통합 알고리즘</div>
         </div>
 
-        <!-- 하단 글로벌 푸터 (로고, 텍스트, 버전 정보) -->
+        <!-- 하단 글로벌 푸터 (흑백 호버 로고 및 버전 관리) -->
         <div class="main-footer">
             <img src="★★★.png" alt="K-Brain Logo" class="footer-logo" onerror="this.style.display='none'">
             <div class="footer-text">K-Brain HRD 사업실_사업3팀 운영 자동화 TOOL</div>
-            <!-- ▼ 버전을 수정하실 때는 아래 부분의 숫자를 변경해 주세요 ▼ -->
-            <div class="version-badge">v26.01.0831</div>
+            <!-- V26.03.0831 버전 업데이트 적용 -->
+            <div class="version-badge">v26.03.0831</div>
         </div>
     </div>
 
@@ -272,7 +281,7 @@
         <div id="statusSurvey" class="status-msg">✅ 만족도 데이터 변환 완료! 행렬이 변경된 결과 파일이 다운로드되었습니다.</div>
     </div>
 
-    <!-- 앱 5: LH SCP 전용 원스톱 할당기 (1번, 2번 복합 옵션 탑재) -->
+    <!-- 앱 5: LH SCP 전용 원스톱 할당기 -->
     <div id="app-lh" style="display:none;">
         <div class="form-section">
             <label class="section-title">01. 양식용 엑셀파일을 다운받아주세요.</label>
@@ -288,7 +297,6 @@
                 <input type="file" id="excelFileLH" accept=".xlsx, .xls" style="display:none;" />
             </div>
             
-            <!-- 조 배정 옵션 추출 (버튼 사이즈 축소 .btn-sm) -->
             <div class="option-box active" id="box-count-lh" onclick="activateModeLH('count')">
                 <div class="option-title">1. 제작이 필요한 조 개수 설정하기</div>
                 <div class="number-btn-wrap" id="btn-container-count-lh"></div>
@@ -301,20 +309,42 @@
 
             <div class="option-box">
                 <div class="option-title">3. 특정 인원 같은 조 사전 배정 (선택)</div>
-                <div class="desc" style="margin-bottom:0;">입력하신 인원들은 무조건 같은 조로 묶이며, 자동으로 같은 객실에 우선 배정됩니다.</div>
+                <div class="desc" style="margin-bottom:0;">입력하신 인원들은 무조건 같은 조로 묶이며, 자동으로 같은 객실에 우선 배정됩니다.<br><span style="color:#0a1f44; font-weight:bold;">(≡ 핸들을 위아래로 끌어서 순서를 변경할 수 있습니다)</span></div>
                 <div id="preassign-container-lh-group" class="preassign-container"></div>
+                <button type="button" class="btn-add" onclick="addLHGroupRow()">➕ 조 추가</button>
             </div>
 
-            <!-- 객실 배정 옵션 추출 (기본 3칸 노출, 드래그/삭제 가능) -->
             <div class="option-box">
                 <div class="option-title">4. 특정 인원 2인 1실 사전 배정 (선택)</div>
-                <div class="desc" style="margin-bottom:0;">반드시 같은 방을 써야 하는 2명이 있다면 이름을 적어주세요. <br><span style="color:#0a1f44; font-weight:bold;">(≡ 핸들을 위아래로 끌어서 순서를 변경할 수 있습니다)</span></div>
+                <div class="desc" style="margin-bottom:0;">반드시 같은 방을 써야 하는 2명이 있다면 이름을 적어주세요.<br><span style="color:#0a1f44; font-weight:bold;">(≡ 핸들을 위아래로 끌어서 순서를 변경할 수 있습니다)</span></div>
                 <div id="preassign-container-lh-room" class="preassign-container"></div>
                 <button type="button" class="btn-add" onclick="addRoomRow('preassign-container-lh-room')">➕ 객실 추가</button>
             </div>
 
+            <!-- 신규 기능: 1인실(임원/강사) 사전 배정 추가 -->
             <div class="option-box">
-                <div class="option-title">5. 결과 파일명 설정 (선택사항)</div>
+                <div class="option-title">5. 1인실 사전 특별 배정 (선택)</div>
+                <div class="desc" style="margin-bottom:0;">의전 등 사유로 단독 1인실을 사용해야 하는 대상자가 있다면 이름과 성별을 지정해 주세요.</div>
+                <div class="single-room-wrap">
+                    <div class="single-room-box">
+                        <input type="text" id="lhSingleRoom1" placeholder="예: 김임원">
+                        <div class="gender-toggle">
+                            <button class="gender-btn active" id="lh-sr1-M" onclick="toggleSingleGenderLH(1, 'M')">남</button>
+                            <button class="gender-btn" id="lh-sr1-F" onclick="toggleSingleGenderLH(1, 'F')">여</button>
+                        </div>
+                    </div>
+                    <div class="single-room-box">
+                        <input type="text" id="lhSingleRoom2" placeholder="예: 이강사">
+                        <div class="gender-toggle">
+                            <button class="gender-btn active" id="lh-sr2-M" onclick="toggleSingleGenderLH(2, 'M')">남</button>
+                            <button class="gender-btn" id="lh-sr2-F" onclick="toggleSingleGenderLH(2, 'F')">여</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="option-box">
+                <div class="option-title">6. 결과 파일명 설정 (선택사항)</div>
                 <input type="text" id="outputFileNameLH" placeholder="예: 26년_LH_SCP_숙소및조배정_통합결과" />
             </div>
         </div>
@@ -374,6 +404,14 @@
     // --- 글로벌 변수 ---
     let currentMode = 'groupCount', selectedGroupCount = 5, selectedGroupSize = 0, considerGender = true;
     let currentModeLH = 'groupCountLH', selectedGroupCountLH = 5, selectedGroupSizeLH = 0;
+    
+    // 5번 전용 1인실 성별 토글
+    let singleRoomGenderLH = { 1: 'M', 2: 'M' }; 
+    function toggleSingleGenderLH(id, gender) { 
+        singleRoomGenderLH[id] = gender; 
+        document.getElementById(`lh-sr${id}-M`).classList.toggle('active', gender === 'M'); 
+        document.getElementById(`lh-sr${id}-F`).classList.toggle('active', gender === 'F'); 
+    }
 
     window.onload = function() {
         let initialHash = window.location.hash.replace('#', '');
@@ -391,9 +429,9 @@
         // 2번 앱 세팅
         const roomContainer = document.getElementById('preassign-container-room');
         for(let i=0; i<5; i++) { roomContainer.appendChild(createRoomRow('preassign-container-room', i+1)); }
-        makeSortable('preassign-container-room');
+        makeSortable('preassign-container-room', () => updateRowLabels('preassign-container-room'));
 
-        // 5번 앱 (LH 전용) UI 초기화 세팅
+        // 5번 앱 세팅
         initLHUI();
 
         // 드래그 앤 드롭 존 초기화
@@ -403,7 +441,6 @@
         setupDragDrop('dropZoneLH', 'excelFileLH', 'fileNameDisplayLH');
     }
 
-    // 파일 드래그 앤 드롭 헬퍼
     function setupDragDrop(zoneId, inputId, displayId) {
         const dropZone = document.getElementById(zoneId), fileInput = document.getElementById(inputId), display = document.getElementById(displayId);
         dropZone.addEventListener('click', () => fileInput.click());
@@ -413,7 +450,7 @@
         dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('dragover'); if (e.dataTransfer.files.length > 0) { fileInput.files = e.dataTransfer.files; dropZone.querySelector('p:first-child').style.display='none'; display.style.display='block'; display.innerHTML=`✅ 업로드 완료: ${e.dataTransfer.files[0].name}`; } });
     }
 
-    // --- 1번 조배정 UI/로직 (기존) ---
+    // --- 1번 조배정 UI/로직 ---
     function activateMode(mode) { mode === 'count' ? selectNumber('count', selectedGroupCount || 5) : selectNumber('size', selectedGroupSize || 6); }
     function selectNumber(type, num) {
         document.querySelectorAll('.num-btn.btn-count, .num-btn.btn-size').forEach(b => b.classList.remove('active'));
@@ -422,9 +459,8 @@
         updateGroupPreassignUI('preassign-container-group', currentMode, selectedGroupCount); 
     }
     
-    // 조별 사전배정 UI 생성기
     function updateGroupPreassignUI(containerId, cMode, cCount) {
-        let uiGroupCount = cMode === 'groupCount' || cMode === 'groupCountLH' ? (cCount || 5) : 10;
+        let uiGroupCount = cMode === 'groupCount' ? (cCount || 5) : 10;
         const container = document.getElementById(containerId);
         let existingData = [];
         for(let i=0; i<container.children.length; i++) { if (container.children[i].className.includes('preassign-row')) { existingData.push(Array.from(container.children[i].querySelectorAll('input')).map(inp => inp.value)); } }
@@ -439,7 +475,7 @@
     }
     function processGroupAssignment() { alert("조 배정 알고리즘(1번)은 정상 탑재되었습니다."); }
 
-    // --- 2번 객실 배정 동적 Row UI (재사용 가능 구조) ---
+    // --- 동적 Row UI (재사용 가능 구조 - 조/객실 공통) ---
     function addRoomRow(containerId) {
         const container = document.getElementById(containerId);
         const count = container.querySelectorAll('.preassign-row').length;
@@ -453,20 +489,45 @@
         for(let j=0; j<2; j++) { let inp = document.createElement('input'); inp.type = 'text'; inp.className = 'preassign-input room-pair'; inp.placeholder = '동실 대상자 이름'; inputWrap.appendChild(inp); }
         row.appendChild(inputWrap); 
         const removeBtn = document.createElement('button'); removeBtn.className = 'btn-remove'; removeBtn.innerHTML = '➖';
-        removeBtn.onclick = function() { row.remove(); updateRoomLabels(containerId); }; row.appendChild(removeBtn); return row;
+        removeBtn.onclick = function() { row.remove(); updateRowLabels(containerId); }; row.appendChild(removeBtn); return row;
     }
-    function updateRoomLabels(containerId) {
+
+    function addLHGroupRow() {
+        const containerId = 'preassign-container-lh-group';
+        const container = document.getElementById(containerId);
+        const count = container.querySelectorAll('.preassign-row').length;
+        
+        const row = document.createElement('div'); row.className = 'preassign-row'; row.draggable = true;
+        const handle = document.createElement('div'); handle.className = 'drag-handle'; handle.innerHTML = '≡'; row.appendChild(handle);
+        const label = document.createElement('div'); label.className = 'preassign-label'; label.innerText = `${count + 1}조`; row.appendChild(label);
+        const inputWrap = document.createElement('div'); inputWrap.className = 'preassign-inputs group-inputs';
+        for(let j=0; j<5; j++) { let inp = document.createElement('input'); inp.type = 'text'; inp.className = 'preassign-input'; inp.placeholder = '이름'; inputWrap.appendChild(inp); }
+        row.appendChild(inputWrap); 
+        const removeBtn = document.createElement('button'); removeBtn.className = 'btn-remove'; removeBtn.innerHTML = '➖';
+        removeBtn.onclick = function() { row.remove(); updateRowLabels(containerId); }; row.appendChild(removeBtn);
+        
+        container.appendChild(row);
+    }
+
+    function updateRowLabels(containerId) {
         const rows = document.querySelectorAll(`#${containerId} .preassign-row`);
-        rows.forEach((row, index) => { row.querySelector('.preassign-label').innerText = `객실${index + 1}`; });
+        let isGroup = containerId.includes('group');
+        let prefix = isGroup ? '' : '객실';
+        let suffix = isGroup ? '조' : '';
+        rows.forEach((row, index) => {
+            row.querySelector('.preassign-label').innerText = `${prefix}${index + 1}${suffix}`;
+        });
     }
-    function makeSortable(containerId) {
+
+    function makeSortable(containerId, updateFn) {
         const container = document.getElementById(containerId); let draggingEl;
         container.addEventListener('touchstart', (e) => { if (!e.target.classList.contains('drag-handle')) return; draggingEl = e.target.closest('.preassign-row'); draggingEl.classList.add('dragging'); }, {passive: true});
         container.addEventListener('touchmove', (e) => {
             if (!draggingEl) return; e.preventDefault(); const touch = e.touches[0];
             const elements = [...container.querySelectorAll('.preassign-row:not(.dragging)')];
             const nextElement = elements.find(el => { const rect = el.getBoundingClientRect(); return touch.clientY <= rect.top + rect.height / 2; });
-            if (nextElement) { container.insertBefore(draggingEl, nextElement); } else { container.appendChild(draggingEl); } updateRoomLabels(containerId);
+            if (nextElement) { container.insertBefore(draggingEl, nextElement); } else { container.appendChild(draggingEl); } 
+            if(updateFn) updateFn();
         }, {passive: false});
         container.addEventListener('touchend', () => { if (draggingEl) { draggingEl.classList.remove('dragging'); draggingEl = null; } });
         container.addEventListener('dragstart', (e) => { if (e.target.closest('.preassign-row')) { draggingEl = e.target.closest('.preassign-row'); e.dataTransfer.effectAllowed = 'move'; setTimeout(() => draggingEl.classList.add('dragging'), 0); } });
@@ -474,19 +535,19 @@
             e.preventDefault(); if (!draggingEl) return;
             const elements = [...container.querySelectorAll('.preassign-row:not(.dragging)')];
             const nextElement = elements.find(el => { const rect = el.getBoundingClientRect(); return e.clientY <= rect.top + rect.height / 2; });
-            if (nextElement) { container.insertBefore(draggingEl, nextElement); } else { container.appendChild(draggingEl); } updateRoomLabels(containerId);
+            if (nextElement) { container.insertBefore(draggingEl, nextElement); } else { container.appendChild(draggingEl); } 
+            if(updateFn) updateFn();
         });
         container.addEventListener('dragend', () => { if (draggingEl) { draggingEl.classList.remove('dragging'); draggingEl = null; } });
     }
+
     function processRoomAssignment() { alert("객실 배정 알고리즘(2번) 정상 작동합니다."); }
     function processSurvey() { alert("만족도 조사 알고리즘(4번) 정상 작동합니다."); }
-
 
     // ==========================================
     // 👑 5번 앱: LH SCP 전용 객실/조 배정 통합 알고리즘
     // ==========================================
     function initLHUI() {
-        // 사이즈 조절된 버튼 UI 생성 (btn-sm 클래스 적용)
         const countContainerLH = document.getElementById('btn-container-count-lh'); 
         const sizeContainerLH = document.getElementById('btn-container-size-lh');
         for(let i=1; i<=10; i++) {
@@ -497,22 +558,32 @@
             btnS.onclick = (e) => { e.stopPropagation(); selectNumberLH('size', i); }; sizeContainerLH.appendChild(btnS);
         }
         
-        // 조 사전 지정은 초기 5줄 세팅
-        updateGroupPreassignUI('preassign-container-lh-group', currentModeLH, selectedGroupCountLH);
+        const lhGroupContainer = document.getElementById('preassign-container-lh-group');
+        lhGroupContainer.innerHTML = '';
+        for(let i=0; i<3; i++) { addLHGroupRow(); }
+        makeSortable('preassign-container-lh-group', () => updateRowLabels('preassign-container-lh-group'));
         
-        // 방 사전 지정은 디폴트 "3줄"만 세팅
-        const roomContainerLH = document.getElementById('preassign-container-lh-room');
-        roomContainerLH.innerHTML = '';
-        for(let i=0; i<3; i++) { roomContainerLH.appendChild(createRoomRow('preassign-container-lh-room', i+1)); }
-        makeSortable('preassign-container-lh-room');
+        const lhRoomContainer = document.getElementById('preassign-container-lh-room');
+        lhRoomContainer.innerHTML = '';
+        for(let i=0; i<3; i++) { lhRoomContainer.appendChild(createRoomRow('preassign-container-lh-room', i+1)); }
+        makeSortable('preassign-container-lh-room', () => updateRowLabels('preassign-container-lh-room'));
     }
 
     function activateModeLH(mode) { mode === 'count' ? selectNumberLH('count', selectedGroupCountLH || 5) : selectNumberLH('size', selectedGroupSizeLH || 6); }
+    
     function selectNumberLH(type, num) {
         document.querySelectorAll('.num-btn.btn-count-lh, .num-btn.btn-size-lh').forEach(b => b.classList.remove('active'));
-        if(type === 'count') { currentModeLH = 'groupCountLH'; selectedGroupCountLH = num; document.getElementById('btn-count-lh-' + num).classList.add('active'); document.getElementById('box-count-lh').classList.add('active'); document.getElementById('box-size-lh').classList.remove('active'); } 
-        else { currentModeLH = 'groupSizeLH'; selectedGroupSizeLH = num; document.getElementById('btn-size-lh-' + num).classList.add('active'); document.getElementById('box-count-lh').classList.remove('active'); document.getElementById('box-size-lh').classList.add('active'); }
-        updateGroupPreassignUI('preassign-container-lh-group', currentModeLH, selectedGroupCountLH); 
+        if(type === 'count') { 
+            currentModeLH = 'groupCountLH'; selectedGroupCountLH = num; 
+            document.getElementById('btn-count-lh-' + num).classList.add('active'); 
+            document.getElementById('box-count-lh').classList.add('active'); 
+            document.getElementById('box-size-lh').classList.remove('active'); 
+        } else { 
+            currentModeLH = 'groupSizeLH'; selectedGroupSizeLH = num; 
+            document.getElementById('btn-size-lh-' + num).classList.add('active'); 
+            document.getElementById('box-count-lh').classList.remove('active'); 
+            document.getElementById('box-size-lh').classList.add('active'); 
+        }
     }
 
     function processLHAssignment() {
@@ -528,18 +599,22 @@
                 const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
                 if (jsonData.length === 0 || !('이름' in jsonData[0])) return;
                 
-                // 1. 제작 조 개수 산출
                 let finalGroupCount = currentModeLH === 'groupSizeLH' ? Math.ceil(jsonData.length / selectedGroupSizeLH) : selectedGroupCountLH;
                 finalGroupCount = finalGroupCount || 1;
 
-                // 2. 조 단위 사전 지정 데이터 추출 -> 맵핑 { '홍길동': 0 (조 인덱스) }
+                // 2. 조 단위 사전 지정 데이터 추출
                 let groupMap = {};
+                let maxPreassignedGroupIdx = -1;
                 document.getElementById('preassign-container-lh-group').querySelectorAll('.preassign-row').forEach((row, bIdx) => {
+                    let hasName = false;
                     row.querySelectorAll('input').forEach(inp => {
                         let name = inp.value.trim();
-                        if(name && bIdx < finalGroupCount) { groupMap[name] = bIdx; }
+                        if(name) { groupMap[name] = bIdx; hasName = true; }
                     });
+                    if(hasName && bIdx > maxPreassignedGroupIdx) maxPreassignedGroupIdx = bIdx;
                 });
+                
+                if (finalGroupCount <= maxPreassignedGroupIdx) { finalGroupCount = maxPreassignedGroupIdx + 1; }
 
                 // 3. 객실 사전 지정 데이터 추출
                 let preRooms = [];
@@ -553,7 +628,29 @@
                 let allRoomBlocks = [];
                 let autoRoomCounter = 1;
 
-                // 4. 객실 사전 지정 인원들 블록(Block) 구성
+                // ✨ 신규: 1인실 사전 배정자 추출
+                [1, 2].forEach(id => {
+                    let name = document.getElementById(`lhSingleRoom${id}`).value.trim();
+                    if(name) { 
+                        let pIdx = unassigned.findIndex(p => p['이름'] === name); 
+                        if(pIdx !== -1) { 
+                            let gCategory = singleRoomGenderLH[id] === 'M' ? 'M' : 'F'; 
+                            let targetG = groupMap[name] !== undefined ? groupMap[name] : -1;
+                            let member = unassigned.splice(pIdx, 1)[0];
+                            allRoomBlocks.push({ 
+                                isPre: true, 
+                                isSinglePre: true,
+                                roomName: `[사전] 1인실-${id}`, 
+                                members: [member], 
+                                targetGroup: targetG, 
+                                gender: gCategory, 
+                                avgAge: Number(member['나이']||0) 
+                            }); 
+                        } 
+                    }
+                });
+
+                // 4. 객실 사전 지정 인원들 블록 구성
                 preRooms.forEach(pr => {
                     let members = [];
                     pr.names.forEach(n => {
@@ -561,24 +658,19 @@
                         if(idx !== -1) members.push(unassigned.splice(idx, 1)[0]);
                     });
                     if(members.length > 0) {
-                        // 룸메이트 중 한 명이라도 조가 지정되어 있다면, 해당 방 전체가 그 조를 따라감 (핵심 규칙)
                         let targetG = -1;
                         members.forEach(m => { if (groupMap[m['이름']] !== undefined) targetG = groupMap[m['이름']]; });
-                        
                         let gRaw = (members[0]['성별'] || '').toString().trim().toUpperCase();
                         let gender = maleKeywords.includes(gRaw) ? 'M' : (femaleKeywords.includes(gRaw) ? 'F' : 'U');
                         let avgAge = members.reduce((s, m) => s + Number(m['나이']||0), 0) / members.length;
-
                         allRoomBlocks.push({ isPre: true, roomName: `[사전] 동실-${pr.id}`, members: members, targetGroup: targetG, gender: gender, avgAge: avgAge });
                     }
                 });
 
                 // 5. 남은 인원들에 조 사전 지정 여부 각인
-                unassigned.forEach(u => {
-                    u._targetGroup = groupMap[u['이름']] !== undefined ? groupMap[u['이름']] : -1;
-                });
+                unassigned.forEach(u => { u._targetGroup = groupMap[u['이름']] !== undefined ? groupMap[u['이름']] : -1; });
 
-                // 6. 남은 인원들 조건(조 지정 ➔ 성별)에 따라 분류하여 2인 1조 객실 블록 구성
+                // 6. 남은 인원들 조건 분류 및 2인 1조 객실 블록 구성
                 let groupedPools = {};
                 unassigned.forEach(u => {
                     let gRaw = (u['성별'] || '').toString().trim().toUpperCase();
@@ -590,7 +682,7 @@
 
                 Object.keys(groupedPools).forEach(key => {
                     let pool = groupedPools[key];
-                    pool.sort((a,b) => b['나이'] - a['나이']); // 나이 내림차순 매칭
+                    pool.sort((a,b) => b['나이'] - a['나이']);
                     let parts = key.split('_');
                     let tGroup = parseInt(parts[0]);
                     let gen = parts[1];
@@ -603,14 +695,14 @@
                     }
                 });
 
-                // 7. 완성된 '객실 블록'들을 최종 조(Group)에 할당
+                // 7. 객실 블록들을 조에 최종 할당
                 let groups = Array.from({length: finalGroupCount}, () => ({ members: [], roomCount: 0 }));
                 let remainingBlocks = [];
 
-                // Step 7-1: 조 사전지정이 걸려있는 객실 블록 우선 투입
+                // Step 7-1: 조 사전지정 블록 우선 배정
                 allRoomBlocks.forEach(rb => {
                     if(rb.targetGroup !== -1 && rb.targetGroup < finalGroupCount) {
-                        if(!rb.isPre) { rb.roomName = autoRoomCounter++ + '객실'; }
+                        if(!rb.isPre) { rb.roomName = autoRoomCounter++ + (rb.members.length === 1 ? '객실(1인)' : '객실'); }
                         rb.members.forEach(m => { groups[rb.targetGroup].members.push({...m, '객실명': rb.roomName}); });
                         groups[rb.targetGroup].roomCount++;
                     } else {
@@ -618,16 +710,28 @@
                     }
                 });
 
-                // Step 7-2: 남은 객실 블록들을 성별/나이 순 지그재그(ZigZag) 균등 분배
-                let fRooms = remainingBlocks.filter(r => r.gender === 'F').sort((a,b) => b.avgAge - a.avgAge);
-                let mRooms = remainingBlocks.filter(r => r.gender === 'M').sort((a,b) => b.avgAge - a.avgAge);
-                let uRooms = remainingBlocks.filter(r => r.gender === 'U').sort((a,b) => b.avgAge - a.avgAge);
+                // Step 7-2: 나홀로 1인실 발생 시 특수 처리 (1인실 사전 배정자 제외)
+                let autoSingleBlocks = remainingBlocks.filter(b => b.members.length === 1 && !b.isSinglePre);
+                let otherBlocks = remainingBlocks.filter(b => b.members.length > 1 || b.isSinglePre);
+
+                let pairedSingleBlocks = [];
+                for(let i=0; i < autoSingleBlocks.length; i+=2) {
+                    if (autoSingleBlocks[i+1]) {
+                        pairedSingleBlocks.push({
+                            isPairOfSingles: true,
+                            blocks: [autoSingleBlocks[i], autoSingleBlocks[i+1]],
+                            gender: 'U', 
+                            avgAge: (autoSingleBlocks[i].avgAge + autoSingleBlocks[i+1].avgAge) / 2
+                        });
+                    } else {
+                        otherBlocks.push(autoSingleBlocks[i]);
+                    }
+                }
 
                 let currIdx = 0; let stepDir = 1;
                 function distributeBlocks(list) {
                     while(list.length > 0) {
-                        let rb = list.shift();
-                        // 인원이 가장 적은 조 찾기
+                        let item = list.shift();
                         let minMembers = Math.min(...groups.map(g => g.members.length));
                         let cand = groups.map((g, i) => i).filter(i => groups[i].members.length === minMembers);
                         
@@ -636,13 +740,31 @@
                         else { let val = cand.filter(i => i <= currIdx); nextIdx = val.length > 0 ? Math.max(...val) : (stepDir = 1, Math.min(...cand)); }
                         currIdx = nextIdx !== -1 ? nextIdx : cand[0];
 
-                        if(!rb.isPre) { rb.roomName = autoRoomCounter++ + '객실'; }
-                        rb.members.forEach(m => { groups[currIdx].members.push({...m, '객실명': rb.roomName}); });
-                        groups[currIdx].roomCount++;
+                        if (item.isPairOfSingles) {
+                            item.blocks.forEach(rb => {
+                                if(!rb.isPre) { rb.roomName = autoRoomCounter++ + '객실(1인)'; }
+                                rb.members.forEach(m => { groups[currIdx].members.push({...m, '객실명': rb.roomName}); });
+                                groups[currIdx].roomCount++;
+                            });
+                        } 
+                        else {
+                            let rb = item;
+                            if(!rb.isPre) { rb.roomName = autoRoomCounter++ + (rb.members.length === 1 ? '객실(1인)' : '객실'); }
+                            rb.members.forEach(m => { groups[currIdx].members.push({...m, '객실명': rb.roomName}); });
+                            groups[currIdx].roomCount++;
+                        }
                     }
                 }
 
-                distributeBlocks(fRooms); distributeBlocks(mRooms); distributeBlocks(uRooms);
+                distributeBlocks(pairedSingleBlocks.sort((a,b) => b.avgAge - a.avgAge));
+
+                let fRooms = otherBlocks.filter(r => r.gender === 'F').sort((a,b) => b.avgAge - a.avgAge);
+                let mRooms = otherBlocks.filter(r => r.gender === 'M').sort((a,b) => b.avgAge - a.avgAge);
+                let uRooms = otherBlocks.filter(r => r.gender === 'U').sort((a,b) => b.avgAge - a.avgAge);
+                
+                distributeBlocks(fRooms);
+                distributeBlocks(mRooms);
+                distributeBlocks(uRooms);
 
                 // 8. 엑셀 출력 데이터 포맷팅
                 let summaryData = []; let resultData = [];
