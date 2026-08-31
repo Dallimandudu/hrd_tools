@@ -11,9 +11,7 @@
         .container { max-width: 750px; margin: 0 auto; background: #ffffff; padding: 40px; border-radius: 4px; border-top: 8px solid #0a1f44; box-shadow: 0 10px 25px rgba(0,0,0,0.08); position: relative; }
         
         h1 { color: #0a1f44; text-align: center; font-size: 24px; font-weight: 800; margin-bottom: 5px; }
-        .subtitle { text-align: center; color: #666; font-size: 14px; margin-bottom: 15px; font-weight: 500; }
-        .logo-wrap { text-align: center; margin-bottom: 30px; }
-        .logo-img { max-width: 250px; height: auto; } 
+        .subtitle { text-align: center; color: #666; font-size: 14px; margin-bottom: 30px; font-weight: 500; }
         
         #main-menu { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 10px; }
         .menu-btn { display: flex; align-items: center; justify-content: center; flex-direction: column; background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 30px 20px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; text-align: center; }
@@ -26,7 +24,15 @@
         .menu-icon { font-size: 40px; margin-bottom: 15px; }
         .menu-title { font-size: 16px; font-weight: 700; color: #0a1f44; margin-bottom: 5px; }
         .menu-desc { font-size: 13px; color: #64748b; line-height: 1.5; word-break: keep-all; font-weight: 400; }
-        .footer-text { grid-column: 1 / -1; text-align: center; margin-top: 20px; font-weight: 600; color: #94a3b8; font-size: 13px; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+
+        /* 하단(Footer) 디자인 최적화 */
+        .main-footer { grid-column: 1 / -1; text-align: center; margin-top: 20px; padding-top: 30px; border-top: 1px solid #e2e8f0; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .footer-logo { max-width: 140px; height: auto; opacity: 0.4; filter: grayscale(100%); transition: 0.3s ease; }
+        .footer-logo:hover { opacity: 1; filter: grayscale(0%); }
+        .footer-text { font-weight: 600; color: #94a3b8; font-size: 13px; }
+        
+        /* 버전 관리 뱃지 */
+        .version-badge { display: inline-block; background-color: #f1f5f9; color: #64748b; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; border: 1px solid #e2e8f0; font-family: monospace; }
 
         .btn-back { position: absolute; top: 30px; left: 30px; background: none; border: none; color: #64748b; font-weight: 700; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
         .btn-back:hover { color: #0a1f44; }
@@ -52,9 +58,7 @@
         .num-btn:hover { background-color: #f1f5f9; }
         .num-btn.active { background-color: #0a1f44; color: white; border-color: #0a1f44; }
         
-        /* 너무 큰 버튼 축소용 클래스 */
         .num-btn.btn-sm { padding: 6px 0; font-size: 13px; }
-
         .ox-btn-wrap { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
 
         input[type="text"] { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; font-family: inherit; font-size: 13px; margin-top: 5px; }
@@ -78,6 +82,13 @@
         .btn-remove { background: none; border: none; cursor: pointer; padding: 0 0 0 10px; font-size: 16px; color: #cbd5e1; transition: 0.2s; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         .btn-remove:hover { color: #ef4444; transform: scale(1.1); }
 
+        .single-room-wrap { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 10px; }
+        .single-room-box { display: flex; align-items: center; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; padding: 5px; }
+        .single-room-box input { flex: 1; border: none; background: transparent; padding: 6px; font-size: 13px; margin: 0; font-family: inherit; }
+        .gender-toggle { display: flex; border: 1px solid #cbd5e1; border-radius: 4px; overflow: hidden; }
+        .gender-btn { padding: 6px 12px; font-size: 13px; font-weight: 600; cursor: pointer; background: #fff; color: #64748b; border: none; transition: 0.2s; font-family: inherit; }
+        .gender-btn.active { background: #0a1f44; color: #fff; }
+
         .vat-wrap { background: #fff; border: 2px solid #e2e8f0; border-radius: 8px; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         .vat-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; }
         .vat-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
@@ -97,7 +108,6 @@
             .container { padding: 20px 15px; border-top-width: 6px; }
             h1 { font-size: 20px; word-break: keep-all; line-height: 1.3; margin-top: 0; }
             .subtitle { font-size: 13px; margin-bottom: 20px; }
-            .logo-img { max-width: 160px; }
             .btn-back { position: static; margin-bottom: 20px; display: inline-flex; padding: 0; font-size: 15px; }
 
             #main-menu { grid-template-columns: 1fr; gap: 15px; }
@@ -131,10 +141,6 @@
     <h1>K-Brain 오프라인 교육 자동화 솔루션</h1>
     <div class="subtitle">K-Brain HRD Business Unit Work Efficiency Improvement System</div>
     
-    <div class="logo-wrap" id="mainLogo">
-        <img src="★★★.png" alt="K-Brain Logo" class="logo-img" onerror="this.style.display='none'">
-    </div>
-    
     <!-- 첫 화면: 5개 메뉴 선택 -->
     <div id="main-menu">
         <div class="menu-btn" onclick="showApp('app-group')">
@@ -165,11 +171,15 @@
             <div class="menu-desc"><b>"룸메이트는 무조건 같은 조원으로 편성!"</b><br>사전 객실 지정과 조 배정이 결합된 완벽한 통합 알고리즘</div>
         </div>
 
-        <div class="footer-text">K-Brain HRD 사업실_사업3팀 운영 자동화 TOOL</div>
+        <!-- 하단 글로벌 푸터 (로고, 텍스트, 버전 정보) -->
+        <div class="main-footer">
+            <img src="★★★.png" alt="K-Brain Logo" class="footer-logo" onerror="this.style.display='none'">
+            <div class="footer-text">K-Brain HRD 사업실_사업3팀 운영 자동화 TOOL</div>
+            <!-- ▼ 버전을 수정하실 때는 아래 부분의 숫자를 변경해 주세요 ▼ -->
+            <div class="version-badge">v26.01.0831</div>
+        </div>
     </div>
 
-    <!-- 앱 1,2,3,4 (이전 코드 유지, HTML 용량상 생략 없이 모두 보존) -->
-    
     <!-- 앱 1: 조배정표 -->
     <div id="app-group" style="display:none;">
         <div class="form-section">
@@ -324,16 +334,17 @@
 
     // --- 화면 전환 및 공통 UI 로직 ---
     function renderPage(pageId) {
-        ['main-menu', 'mainLogo', 'app-group', 'app-room', 'app-vat', 'app-survey', 'app-lh'].forEach(id => {
+        ['main-menu', 'app-group', 'app-room', 'app-vat', 'app-survey', 'app-lh'].forEach(id => {
             const el = document.getElementById(id); if(el) el.style.display = 'none';
         });
         document.getElementById('btnBack').style.display = 'none';
 
-        if (pageId === 'main') { document.getElementById('main-menu').style.display = 'grid'; document.getElementById('mainLogo').style.display = 'block'; } 
-        else {
+        if (pageId === 'main') { 
+            document.getElementById('main-menu').style.display = 'grid'; 
+        } else {
             let targetApp = document.getElementById(pageId);
             if(targetApp) { targetApp.style.display = 'block'; document.getElementById('btnBack').style.display = 'inline-flex'; } 
-            else { document.getElementById('main-menu').style.display = 'grid'; document.getElementById('mainLogo').style.display = 'block'; }
+            else { document.getElementById('main-menu').style.display = 'grid'; }
         }
     }
 
@@ -413,7 +424,7 @@
     
     // 조별 사전배정 UI 생성기
     function updateGroupPreassignUI(containerId, cMode, cCount) {
-        let uiGroupCount = cMode === 'groupCount' ? (cCount || 5) : 10;
+        let uiGroupCount = cMode === 'groupCount' || cMode === 'groupCountLH' ? (cCount || 5) : 10;
         const container = document.getElementById(containerId);
         let existingData = [];
         for(let i=0; i<container.children.length; i++) { if (container.children[i].className.includes('preassign-row')) { existingData.push(Array.from(container.children[i].querySelectorAll('input')).map(inp => inp.value)); } }
