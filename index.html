@@ -7,34 +7,54 @@
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
     <style>
-        body { font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background-color: #f4f6f9; padding: 40px 20px; color: #333; margin: 0; }
-        .container { max-width: 750px; margin: 0 auto; background: #ffffff; padding: 40px; border-radius: 4px; border-top: 8px solid #0a1f44; box-shadow: 0 10px 25px rgba(0,0,0,0.08); position: relative; }
+        /* 기본 배경 (앱 구동 시 라이트 모드) */
+        body { font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background-color: #f4f6f9; color: #333; margin: 0; transition: background-color 0.4s ease; padding: 40px 20px; }
         
-        /* 상단 로고 스타일 추가 */
-        .top-logo-wrap { text-align: center; margin-bottom: 20px; }
-        .top-logo-img { max-width: 200px; height: auto; }
+        /* 메인 대시보드 접속 시 다크 모드(딥 차콜) */
+        body.is-main { background-color: #1b1b22; padding: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
 
-        h1 { color: #0a1f44; text-align: center; font-size: 24px; font-weight: 800; margin-bottom: 5px; }
-        .subtitle { text-align: center; color: #666; font-size: 14px; margin-bottom: 30px; font-weight: 500; }
+        .container { transition: all 0.4s ease; max-width: 750px; margin: 0 auto; background: #ffffff; padding: 40px; border-radius: 4px; border-top: 8px solid #0a1f44; box-shadow: 0 10px 25px rgba(0,0,0,0.08); position: relative; }
         
-        #main-menu { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 10px; }
-        .menu-btn { display: flex; align-items: center; justify-content: center; flex-direction: column; background-color: #f8fafc; border: 2px solid #e2e8f0; padding: 30px 20px; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; text-align: center; }
-        .menu-btn:hover { border-color: #0a1f44; background-color: #f1f5f9; transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.05); }
+        /* 메인 대시보드용 컨테이너 투명화 및 확장 */
+        .container.main-mode { background: transparent; box-shadow: none; border: none; max-width: 1200px; padding: 40px 20px; width: 100%; }
+
+        /* --- 🌟 신규 대시보드(메인 화면) 분할 레이아웃 --- */
+        #dashboard-view { display: flex; align-items: center; gap: 60px; justify-content: space-between; }
+        .dash-left { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; }
+        .dash-right { flex: 1.3; width: 100%; }
         
-        .menu-btn.special-lh { grid-column: 1 / -1; background-color: #f0fdf4; border-color: #059669; }
-        .menu-btn.special-lh:hover { background-color: #dcfce7; border-color: #047857; }
+        .dash-sup-title { font-weight: 300; font-size: 16px; color: #a1a1aa; margin-bottom: 12px; letter-spacing: 1px; }
+        .dash-main-title { font-weight: 800; font-size: 42px; color: #ffffff; line-height: 1.3; margin-bottom: 20px; word-break: keep-all; }
+        .dash-sub-title { font-weight: 300; font-size: 15px; color: #d4d4d8; line-height: 1.6; word-break: keep-all; }
+        
+        .top-logo-img { max-width: 180px; height: auto; margin-bottom: 20px; }
+
+        /* --- 메뉴 버튼 스타일 --- */
+        .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .menu-btn { display: flex; align-items: center; justify-content: center; flex-direction: column; background-color: #ffffff; border: none; padding: 30px 20px; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .menu-btn:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
+        
+        .menu-btn.special-lh { grid-column: 1 / -1; background-color: #f0fdf4; }
+        .menu-btn.special-lh:hover { background-color: #dcfce7; }
         .menu-btn.special-lh .menu-title { color: #065f46; }
 
         .menu-icon { font-size: 40px; margin-bottom: 15px; }
         .menu-title { font-size: 16px; font-weight: 700; color: #0a1f44; margin-bottom: 5px; }
         .menu-desc { font-size: 13px; color: #64748b; line-height: 1.5; word-break: keep-all; font-weight: 400; }
 
+        /* --- 서브(앱) 페이지 전용 스타일 --- */
+        h1.app-title { color: #0a1f44; text-align: center; font-size: 24px; font-weight: 800; margin-bottom: 5px; margin-top: 0; }
+        .app-subtitle { text-align: center; color: #666; font-size: 14px; margin-bottom: 30px; font-weight: 500; }
+        
         .main-footer { grid-column: 1 / -1; text-align: center; margin-top: 20px; padding-top: 30px; border-top: 1px solid #e2e8f0; display: flex; flex-direction: column; align-items: center; gap: 12px; }
         .footer-logo { max-width: 140px; height: auto; opacity: 0.4; filter: grayscale(100%); transition: 0.3s ease; }
         .footer-logo:hover { opacity: 1; filter: grayscale(0%); }
         .footer-text { font-weight: 600; color: #94a3b8; font-size: 13px; }
         
-        .version-badge { display: inline-block; background-color: #f1f5f9; color: #64748b; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; border: 1px solid #e2e8f0; font-family: monospace; }
+        /* 뱃지 스타일 (메인용 다크 뱃지 / 서브용 라이트 뱃지) */
+        .version-badge { display: inline-block; padding: 5px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; font-family: monospace; }
+        .badge-dark { background: rgba(255,255,255,0.1); color: #a1a1aa; border: 1px solid rgba(255,255,255,0.2); margin-top: 35px; }
+        .badge-light { background-color: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
 
         .btn-back { position: absolute; top: 30px; left: 30px; background: none; border: none; color: #64748b; font-weight: 700; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
         .btn-back:hover { color: #0a1f44; }
@@ -59,8 +79,8 @@
         .num-btn { background-color: #fff; border: 1px solid #cbd5e1; padding: 10px 0; text-align: center; border-radius: 4px; cursor: pointer; font-weight: 600; color: #475569; transition: 0.2s; width: 100%; box-sizing: border-box; font-size:14px; font-family: inherit; }
         .num-btn:hover { background-color: #f1f5f9; }
         .num-btn.active { background-color: #0a1f44; color: white; border-color: #0a1f44; }
-        
         .num-btn.btn-sm { padding: 6px 0; font-size: 13px; }
+        
         .ox-btn-wrap { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
 
         input[type="text"] { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; font-family: inherit; font-size: 13px; margin-top: 5px; }
@@ -81,7 +101,6 @@
         
         .btn-add { background: transparent; border: 1px dashed #0a1f44; color: #0a1f44; padding: 12px; width: 100%; border-radius: 4px; font-weight: 700; cursor: pointer; transition: 0.2s; font-family: inherit; margin-top: 10px; }
         .btn-add:hover { background: #f8fafc; }
-        
         .btn-remove { background: none; border: none; cursor: pointer; padding: 0 0 0 10px; font-size: 16px; color: #cbd5e1; transition: 0.2s; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         .btn-remove:hover { color: #ef4444; transform: scale(1.1); }
 
@@ -106,18 +125,21 @@
         .btn-main.lh-btn:hover { background-color: #047857; }
         .status-msg { margin-top: 20px; text-align: center; font-weight: 700; font-size: 14px; color: #047857; background-color: #d1fae5; padding: 12px; border-radius: 4px; display: none; }
 
+        @media screen and (max-width: 800px) {
+            body.is-main { padding: 20px; }
+            #dashboard-view { flex-direction: column; gap: 40px; }
+            .dash-left { text-align: center; align-items: center; }
+            .dash-main-title { font-size: 32px; }
+            .menu-grid { grid-template-columns: 1fr; }
+        }
+
         @media screen and (max-width: 600px) {
-            body { padding: 10px; }
-            .container { padding: 20px 15px; border-top-width: 6px; }
-            h1 { font-size: 20px; word-break: keep-all; line-height: 1.3; margin-top: 0; }
-            .subtitle { font-size: 13px; margin-bottom: 20px; }
-            .top-logo-img { max-width: 160px; }
+            body:not(.is-main) { padding: 10px; }
+            .container:not(.main-mode) { padding: 20px 15px; border-top-width: 6px; }
+            h1.app-title { font-size: 20px; word-break: keep-all; line-height: 1.3; margin-top: 0; }
+            .app-subtitle { font-size: 13px; margin-bottom: 20px; }
             .btn-back { position: static; margin-bottom: 20px; display: inline-flex; padding: 0; font-size: 15px; }
 
-            #main-menu { grid-template-columns: 1fr; gap: 15px; }
-            .menu-btn.special-lh { grid-column: auto; } 
-            .menu-btn { padding: 25px 15px; }
-            
             .form-section { padding: 15px; margin-bottom: 20px; }
             .number-btn-wrap { gap: 5px; }
             .num-btn { padding: 10px 0; font-size: 14px; }
@@ -137,56 +159,58 @@
         }
     </style>
 </head>
-<body>
+<body class="is-main">
 
-<div class="container">
-    <button class="btn-back" id="btnBack" style="display:none;" onclick="showMainMenu()">◀ 메인으로</button>
+<div class="container main-mode" id="appContainer">
     
-    <!-- 상단 컬러 로고 영역 -->
-    <div class="top-logo-wrap" id="topLogo">
-        <img src="★★★.png" alt="K-Brain Logo" class="top-logo-img" onerror="this.style.display='none'">
-    </div>
-    
-    <h1>K-Brain 오프라인 교육 자동화 솔루션</h1>
-    <div class="subtitle">K-Brain HRD Business Unit Work Efficiency Improvement System</div>
-    
-    <!-- 첫 화면: 5개 메뉴 선택 -->
-    <div id="main-menu">
-        <div class="menu-btn" onclick="showApp('app-group')">
-            <div class="menu-icon">👥</div>
-            <div class="menu-title">1. 랜덤 조배정표 만들기</div>
-            <div class="menu-desc">지그재그 알고리즘, 부서 분산, 특정 인원<br>동조 배정 등 고도화된 연수생 조 편성</div>
-        </div>
-        <div class="menu-btn" onclick="showApp('app-room')">
-            <div class="menu-icon">🏨</div>
-            <div class="menu-title">2. 숙소 배정표 만들기</div>
-            <div class="menu-desc">2인 1실 자동매칭, 성별분리, 동실지정까지<br>가능한 자동화 툴</div>
-        </div>
-        <div class="menu-btn" onclick="showApp('app-vat')">
-            <div class="menu-icon">🧮</div>
-            <div class="menu-title">3. 실시간 부가세 계산기</div>
-            <div class="menu-desc">제안서 및 정산 작업 시 필수!<br>합계금액, 공급가액, 부가세 등 즉시 자동 연산</div>
-        </div>
-        <div class="menu-btn" onclick="showApp('app-survey')">
-            <div class="menu-icon">📊</div>
-            <div class="menu-title">4. 만족도 조사 변환기</div>
-            <div class="menu-desc">구글폼 원본 데이터를 넣으면 5점 척도 변환<br>및 보고용 행렬바꿈(Transpose) 즉시 가공</div>
+    <!-- 🌟 [신규] 딥 차콜 다크 모드 대시보드 (메인 화면) -->
+    <div id="dashboard-view">
+        <div class="dash-left">
+            <img src="★★★.png" alt="K-Brain Logo" class="top-logo-img" onerror="this.style.display='none'">
+            <div class="dash-sup-title">K-BRAIN 사업3팀 자동화 TOOL</div>
+            <div class="dash-main-title">오프라인 교육 운영<br>자동화 솔루션</div>
+            <div class="dash-sub-title">조배정부터, 만족도 조사 변환기까지<br>교육준비를 원클릭으로 관리합니다.</div>
+            
+            <div class="version-badge badge-dark">v26.04.0831</div>
         </div>
         
-        <!-- 5번 메뉴: LH SCP 전용 -->
-        <div class="menu-btn special-lh" onclick="showApp('app-lh')">
-            <div class="menu-icon">🏢</div>
-            <div class="menu-title">5. [LH SCP 전용] 숙박 및 조배정 원스톱 할당기</div>
-            <div class="menu-desc"><b>"룸메이트는 무조건 같은 조원으로 편성!"</b><br>사전 객실 지정과 조 배정이 결합된 완벽한 통합 알고리즘</div>
+        <div class="dash-right">
+            <div class="menu-grid">
+                <div class="menu-btn" onclick="showApp('app-group')">
+                    <div class="menu-icon">👥</div>
+                    <div class="menu-title">1. 랜덤 조배정표 만들기</div>
+                    <div class="menu-desc">지그재그 알고리즘, 부서 분산, 특정 인원<br>동조 배정 등 고도화된 연수생 조 편성</div>
+                </div>
+                <div class="menu-btn" onclick="showApp('app-room')">
+                    <div class="menu-icon">🏨</div>
+                    <div class="menu-title">2. 숙소 배정표 만들기</div>
+                    <div class="menu-desc">2인 1실 자동매칭, 성별분리, 동실지정까지<br>가능한 자동화 툴</div>
+                </div>
+                <div class="menu-btn" onclick="showApp('app-vat')">
+                    <div class="menu-icon">🧮</div>
+                    <div class="menu-title">3. 실시간 부가세 계산기</div>
+                    <div class="menu-desc">제안서 및 정산 작업 시 필수!<br>합계금액, 공급가액, 부가세 등 즉시 자동 연산</div>
+                </div>
+                <div class="menu-btn" onclick="showApp('app-survey')">
+                    <div class="menu-icon">📊</div>
+                    <div class="menu-title">4. 만족도 조사 변환기</div>
+                    <div class="menu-desc">구글폼 데이터를 넣으면 5점 척도 변환<br>및 보고용 행렬바꿈(Transpose) 즉시 가공</div>
+                </div>
+                <div class="menu-btn special-lh" onclick="showApp('app-lh')">
+                    <div class="menu-icon">🏢</div>
+                    <div class="menu-title">5. [LH SCP 전용] 숙박 및 조배정 원스톱 할당기</div>
+                    <div class="menu-desc"><b>"룸메이트는 무조건 같은 조원으로 편성!"</b><br>사전 객실 지정과 조 배정이 결합된 완벽한 통합 알고리즘</div>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <!-- 하단 글로벌 푸터 (흑백 호버 로고 및 버전 관리) -->
-        <div class="main-footer">
-            <img src="★★★.png" alt="K-Brain Logo" class="footer-logo" onerror="this.style.display='none'">
-            <div class="footer-text">K-Brain HRD 사업실_사업3팀 운영 자동화 TOOL</div>
-            <!-- V26.03.0831 버전 업데이트 적용 -->
-            <div class="version-badge">v26.03.0831</div>
-        </div>
+    <!-- 🌟 서브 페이지(앱) 헤더 -->
+    <div id="app-view-header" style="display:none; text-align:center;">
+        <button class="btn-back" onclick="showMainMenu()">◀ 메인으로</button>
+        <img src="★★★.png" alt="K-Brain Logo" class="top-logo-img" style="margin-bottom:10px;" onerror="this.style.display='none'">
+        <h1 class="app-title">오프라인 교육 자동화 솔루션</h1>
+        <div class="app-subtitle">K-Brain HRD Business Unit Work Efficiency Improvement System</div>
     </div>
 
     <!-- 앱 1: 조배정표 -->
@@ -321,7 +345,6 @@
                 <button type="button" class="btn-add" onclick="addRoomRow('preassign-container-lh-room')">➕ 객실 추가</button>
             </div>
 
-            <!-- 신규 기능: 1인실(임원/강사) 사전 배정 추가 -->
             <div class="option-box">
                 <div class="option-title">5. 1인실 사전 특별 배정 (선택)</div>
                 <div class="desc" style="margin-bottom:0;">의전 등 사유로 단독 1인실을 사용해야 하는 대상자가 있다면 이름과 성별을 지정해 주세요.</div>
@@ -351,10 +374,17 @@
         <button class="btn-main lh-btn" onclick="processLHAssignment()">조/객실 100% 매칭 통합 할당 실행 🏢</button>
         <div id="statusLH" class="status-msg">✅ 숙박 및 조배정 통합 연산 완료! 결과 파일이 다운로드되었습니다.</div>
     </div>
+
+    <!-- 🌟 서브 페이지용 글로벌 푸터 -->
+    <div class="main-footer" id="app-footer" style="display:none;">
+        <img src="★★★.png" alt="K-Brain Logo" class="footer-logo" onerror="this.style.display='none'">
+        <div class="footer-text">K-Brain HRD 사업실_사업3팀 운영 자동화 TOOL</div>
+        <div class="version-badge badge-light">v26.04.0831</div>
+    </div>
+
 </div>
 
 <script>
-    // --- 엑셀 스타일 적용 헬퍼 ---
     function applyStyle(ws) {
         if (!ws['!ref']) return; const range = XLSX.utils.decode_range(ws['!ref']);
         const headerStyle = { fill: { fgColor: { rgb: "0A1F44" } }, font: { color: { rgb: "FFFFFF" }, bold: true, name: "맑은 고딕" }, alignment: { horizontal: "center", vertical: "center" }, border: { top: { style: "thin", color: { rgb: "0A1F44" } }, bottom: { style: "thin", color: { rgb: "0A1F44" } }, left: { style: "thin", color: { rgb: "0A1F44" } }, right: { style: "thin", color: { rgb: "0A1F44" } } } };
@@ -362,19 +392,35 @@
         for (let R = range.s.r; R <= range.e.r; ++R) { for (let C = range.s.c; C <= range.e.c; ++C) { const cellRef = XLSX.utils.encode_cell({ c: C, r: R }); if (!ws[cellRef]) continue; ws[cellRef].s = (R === 0) ? headerStyle : cellStyle; } }
     }
 
-    // --- 화면 전환 및 공통 UI 로직 ---
+    // --- 화면 테마 전환 로직 (SaaS 스타일) ---
     function renderPage(pageId) {
-        ['main-menu', 'app-group', 'app-room', 'app-vat', 'app-survey', 'app-lh'].forEach(id => {
+        ['app-group', 'app-room', 'app-vat', 'app-survey', 'app-lh'].forEach(id => {
             const el = document.getElementById(id); if(el) el.style.display = 'none';
         });
-        document.getElementById('btnBack').style.display = 'none';
+
+        const dashView = document.getElementById('dashboard-view');
+        const appHeader = document.getElementById('app-view-header');
+        const appFooter = document.getElementById('app-footer');
+        const container = document.getElementById('appContainer');
 
         if (pageId === 'main') { 
-            document.getElementById('main-menu').style.display = 'grid'; 
+            document.body.classList.add('is-main');
+            container.classList.add('main-mode');
+            dashView.style.display = 'flex'; 
+            appHeader.style.display = 'none';
+            appFooter.style.display = 'none';
         } else {
             let targetApp = document.getElementById(pageId);
-            if(targetApp) { targetApp.style.display = 'block'; document.getElementById('btnBack').style.display = 'inline-flex'; } 
-            else { document.getElementById('main-menu').style.display = 'grid'; }
+            if(targetApp) { 
+                document.body.classList.remove('is-main');
+                container.classList.remove('main-mode');
+                dashView.style.display = 'none';
+                appHeader.style.display = 'block';
+                appFooter.style.display = 'flex';
+                targetApp.style.display = 'block'; 
+            } else { 
+                showMainMenu();
+            }
         }
     }
 
@@ -382,7 +428,7 @@
     function showMainMenu() { history.pushState({ page: 'main' }, '', window.location.pathname); renderPage('main'); }
     window.addEventListener('popstate', (event) => { if (event.state && event.state.page) { renderPage(event.state.page); } else { renderPage('main'); } });
 
-    // --- 부가세 계산기 로직 ---
+    // --- 부가세 로직 ---
     function formatNumber(num) { return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
     function unformatNumber(str) { return parseInt(str.replace(/[^0-9]/g, '')) || 0; }
     function calcVat(source, val) {
@@ -401,11 +447,10 @@
         const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "명단양식"); XLSX.writeFile(wb, 'K-Brain_연수생_표준명단양식.xlsx');
     }
 
-    // --- 글로벌 변수 ---
+    // --- 변수 및 초기화 ---
     let currentMode = 'groupCount', selectedGroupCount = 5, selectedGroupSize = 0, considerGender = true;
     let currentModeLH = 'groupCountLH', selectedGroupCountLH = 5, selectedGroupSizeLH = 0;
     
-    // 5번 전용 1인실 성별 토글
     let singleRoomGenderLH = { 1: 'M', 2: 'M' }; 
     function toggleSingleGenderLH(id, gender) { 
         singleRoomGenderLH[id] = gender; 
@@ -418,7 +463,6 @@
         if (initialHash && document.getElementById(initialHash)) { history.replaceState({ page: initialHash }, '', '#' + initialHash); renderPage(initialHash); } 
         else { history.replaceState({ page: 'main' }, '', window.location.pathname); renderPage('main'); }
 
-        // 1번 앱 세팅
         const countContainer = document.getElementById('btn-container-count'); const sizeContainer = document.getElementById('btn-container-size');
         for(let i=1; i<=10; i++) {
             let btnC = document.createElement('div'); btnC.className = 'num-btn btn-count ' + (i === 5 ? 'active' : ''); btnC.innerText = i; btnC.id = 'btn-count-' + i; btnC.onclick = (e) => { e.stopPropagation(); selectNumber('count', i); }; countContainer.appendChild(btnC);
@@ -426,15 +470,12 @@
         }
         updateGroupPreassignUI('preassign-container-group', currentMode, selectedGroupCount); 
         
-        // 2번 앱 세팅
         const roomContainer = document.getElementById('preassign-container-room');
         for(let i=0; i<5; i++) { roomContainer.appendChild(createRoomRow('preassign-container-room', i+1)); }
         makeSortable('preassign-container-room', () => updateRowLabels('preassign-container-room'));
 
-        // 5번 앱 세팅
         initLHUI();
 
-        // 드래그 앤 드롭 존 초기화
         setupDragDrop('dropZoneGroup', 'excelFileGroup', 'fileNameDisplayGroup');
         setupDragDrop('dropZoneRoom', 'excelFileRoom', 'fileNameDisplayRoom');
         setupDragDrop('dropZoneSurvey', 'excelFileSurvey', 'fileNameDisplaySurvey');
@@ -450,7 +491,6 @@
         dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('dragover'); if (e.dataTransfer.files.length > 0) { fileInput.files = e.dataTransfer.files; dropZone.querySelector('p:first-child').style.display='none'; display.style.display='block'; display.innerHTML=`✅ 업로드 완료: ${e.dataTransfer.files[0].name}`; } });
     }
 
-    // --- 1번 조배정 UI/로직 ---
     function activateMode(mode) { mode === 'count' ? selectNumber('count', selectedGroupCount || 5) : selectNumber('size', selectedGroupSize || 6); }
     function selectNumber(type, num) {
         document.querySelectorAll('.num-btn.btn-count, .num-btn.btn-size').forEach(b => b.classList.remove('active'));
@@ -475,7 +515,6 @@
     }
     function processGroupAssignment() { alert("조 배정 알고리즘(1번)은 정상 탑재되었습니다."); }
 
-    // --- 동적 Row UI (재사용 가능 구조 - 조/객실 공통) ---
     function addRoomRow(containerId) {
         const container = document.getElementById(containerId);
         const count = container.querySelectorAll('.preassign-row').length;
@@ -496,7 +535,6 @@
         const containerId = 'preassign-container-lh-group';
         const container = document.getElementById(containerId);
         const count = container.querySelectorAll('.preassign-row').length;
-        
         const row = document.createElement('div'); row.className = 'preassign-row'; row.draggable = true;
         const handle = document.createElement('div'); handle.className = 'drag-handle'; handle.innerHTML = '≡'; row.appendChild(handle);
         const label = document.createElement('div'); label.className = 'preassign-label'; label.innerText = `${count + 1}조`; row.appendChild(label);
@@ -505,7 +543,6 @@
         row.appendChild(inputWrap); 
         const removeBtn = document.createElement('button'); removeBtn.className = 'btn-remove'; removeBtn.innerHTML = '➖';
         removeBtn.onclick = function() { row.remove(); updateRowLabels(containerId); }; row.appendChild(removeBtn);
-        
         container.appendChild(row);
     }
 
@@ -544,9 +581,7 @@
     function processRoomAssignment() { alert("객실 배정 알고리즘(2번) 정상 작동합니다."); }
     function processSurvey() { alert("만족도 조사 알고리즘(4번) 정상 작동합니다."); }
 
-    // ==========================================
-    // 👑 5번 앱: LH SCP 전용 객실/조 배정 통합 알고리즘
-    // ==========================================
+    // --- LH 특수 배정 ---
     function initLHUI() {
         const countContainerLH = document.getElementById('btn-container-count-lh'); 
         const sizeContainerLH = document.getElementById('btn-container-size-lh');
@@ -589,10 +624,7 @@
     function processLHAssignment() {
         const fileInputLH = document.getElementById('excelFileLH');
         if (!fileInputLH.files.length) { alert('LH 과정용 엑셀 명단을 업로드해 주세요.'); return; }
-        
-        const reader = new FileReader(); 
-        const statusDiv = document.getElementById('statusLH');
-        
+        const reader = new FileReader(); const statusDiv = document.getElementById('statusLH');
         reader.onload = function(e) {
             try {
                 const data = new Uint8Array(e.target.result); const workbook = XLSX.read(data, {type: 'array'});
@@ -602,21 +634,14 @@
                 let finalGroupCount = currentModeLH === 'groupSizeLH' ? Math.ceil(jsonData.length / selectedGroupSizeLH) : selectedGroupCountLH;
                 finalGroupCount = finalGroupCount || 1;
 
-                // 2. 조 단위 사전 지정 데이터 추출
-                let groupMap = {};
-                let maxPreassignedGroupIdx = -1;
+                let groupMap = {}; let maxPreassignedGroupIdx = -1;
                 document.getElementById('preassign-container-lh-group').querySelectorAll('.preassign-row').forEach((row, bIdx) => {
                     let hasName = false;
-                    row.querySelectorAll('input').forEach(inp => {
-                        let name = inp.value.trim();
-                        if(name) { groupMap[name] = bIdx; hasName = true; }
-                    });
+                    row.querySelectorAll('input').forEach(inp => { let name = inp.value.trim(); if(name) { groupMap[name] = bIdx; hasName = true; } });
                     if(hasName && bIdx > maxPreassignedGroupIdx) maxPreassignedGroupIdx = bIdx;
                 });
-                
                 if (finalGroupCount <= maxPreassignedGroupIdx) { finalGroupCount = maxPreassignedGroupIdx + 1; }
 
-                // 3. 객실 사전 지정 데이터 추출
                 let preRooms = [];
                 document.getElementById('preassign-container-lh-room').querySelectorAll('.preassign-row').forEach((row, rIdx) => {
                     let inputs = row.querySelectorAll('input');
@@ -624,11 +649,8 @@
                     if(name1 || name2) { preRooms.push({ names: [name1, name2].filter(n => n), id: rIdx + 1 }); }
                 });
 
-                let unassigned = [...jsonData];
-                let allRoomBlocks = [];
-                let autoRoomCounter = 1;
+                let unassigned = [...jsonData]; let allRoomBlocks = []; let autoRoomCounter = 1;
 
-                // ✨ 신규: 1인실 사전 배정자 추출
                 [1, 2].forEach(id => {
                     let name = document.getElementById(`lhSingleRoom${id}`).value.trim();
                     if(name) { 
@@ -637,29 +659,16 @@
                             let gCategory = singleRoomGenderLH[id] === 'M' ? 'M' : 'F'; 
                             let targetG = groupMap[name] !== undefined ? groupMap[name] : -1;
                             let member = unassigned.splice(pIdx, 1)[0];
-                            allRoomBlocks.push({ 
-                                isPre: true, 
-                                isSinglePre: true,
-                                roomName: `[사전] 1인실-${id}`, 
-                                members: [member], 
-                                targetGroup: targetG, 
-                                gender: gCategory, 
-                                avgAge: Number(member['나이']||0) 
-                            }); 
+                            allRoomBlocks.push({ isPre: true, isSinglePre: true, roomName: `[사전] 1인실-${id}`, members: [member], targetGroup: targetG, gender: gCategory, avgAge: Number(member['나이']||0) }); 
                         } 
                     }
                 });
 
-                // 4. 객실 사전 지정 인원들 블록 구성
                 preRooms.forEach(pr => {
                     let members = [];
-                    pr.names.forEach(n => {
-                        let idx = unassigned.findIndex(u => u['이름'] === n);
-                        if(idx !== -1) members.push(unassigned.splice(idx, 1)[0]);
-                    });
+                    pr.names.forEach(n => { let idx = unassigned.findIndex(u => u['이름'] === n); if(idx !== -1) members.push(unassigned.splice(idx, 1)[0]); });
                     if(members.length > 0) {
-                        let targetG = -1;
-                        members.forEach(m => { if (groupMap[m['이름']] !== undefined) targetG = groupMap[m['이름']]; });
+                        let targetG = -1; members.forEach(m => { if (groupMap[m['이름']] !== undefined) targetG = groupMap[m['이름']]; });
                         let gRaw = (members[0]['성별'] || '').toString().trim().toUpperCase();
                         let gender = maleKeywords.includes(gRaw) ? 'M' : (femaleKeywords.includes(gRaw) ? 'F' : 'U');
                         let avgAge = members.reduce((s, m) => s + Number(m['나이']||0), 0) / members.length;
@@ -667,10 +676,8 @@
                     }
                 });
 
-                // 5. 남은 인원들에 조 사전 지정 여부 각인
                 unassigned.forEach(u => { u._targetGroup = groupMap[u['이름']] !== undefined ? groupMap[u['이름']] : -1; });
 
-                // 6. 남은 인원들 조건 분류 및 2인 1조 객실 블록 구성
                 let groupedPools = {};
                 unassigned.forEach(u => {
                     let gRaw = (u['성별'] || '').toString().trim().toUpperCase();
@@ -681,51 +688,34 @@
                 });
 
                 Object.keys(groupedPools).forEach(key => {
-                    let pool = groupedPools[key];
-                    pool.sort((a,b) => b['나이'] - a['나이']);
-                    let parts = key.split('_');
-                    let tGroup = parseInt(parts[0]);
-                    let gen = parts[1];
-
+                    let pool = groupedPools[key]; pool.sort((a,b) => b['나이'] - a['나이']);
+                    let parts = key.split('_'); let tGroup = parseInt(parts[0]); let gen = parts[1];
                     for(let i=0; i<pool.length; i+=2) {
-                        let members = [pool[i]];
-                        if(pool[i+1]) members.push(pool[i+1]);
+                        let members = [pool[i]]; if(pool[i+1]) members.push(pool[i+1]);
                         let avgAge = members.reduce((s, m) => s + Number(m['나이']||0), 0) / members.length;
                         allRoomBlocks.push({ isPre: false, roomName: '', members: members, targetGroup: tGroup, gender: gen, avgAge: avgAge });
                     }
                 });
 
-                // 7. 객실 블록들을 조에 최종 할당
                 let groups = Array.from({length: finalGroupCount}, () => ({ members: [], roomCount: 0 }));
                 let remainingBlocks = [];
 
-                // Step 7-1: 조 사전지정 블록 우선 배정
                 allRoomBlocks.forEach(rb => {
                     if(rb.targetGroup !== -1 && rb.targetGroup < finalGroupCount) {
                         if(!rb.isPre) { rb.roomName = autoRoomCounter++ + (rb.members.length === 1 ? '객실(1인)' : '객실'); }
                         rb.members.forEach(m => { groups[rb.targetGroup].members.push({...m, '객실명': rb.roomName}); });
                         groups[rb.targetGroup].roomCount++;
-                    } else {
-                        remainingBlocks.push(rb);
-                    }
+                    } else { remainingBlocks.push(rb); }
                 });
 
-                // Step 7-2: 나홀로 1인실 발생 시 특수 처리 (1인실 사전 배정자 제외)
                 let autoSingleBlocks = remainingBlocks.filter(b => b.members.length === 1 && !b.isSinglePre);
                 let otherBlocks = remainingBlocks.filter(b => b.members.length > 1 || b.isSinglePre);
 
                 let pairedSingleBlocks = [];
                 for(let i=0; i < autoSingleBlocks.length; i+=2) {
                     if (autoSingleBlocks[i+1]) {
-                        pairedSingleBlocks.push({
-                            isPairOfSingles: true,
-                            blocks: [autoSingleBlocks[i], autoSingleBlocks[i+1]],
-                            gender: 'U', 
-                            avgAge: (autoSingleBlocks[i].avgAge + autoSingleBlocks[i+1].avgAge) / 2
-                        });
-                    } else {
-                        otherBlocks.push(autoSingleBlocks[i]);
-                    }
+                        pairedSingleBlocks.push({ isPairOfSingles: true, blocks: [autoSingleBlocks[i], autoSingleBlocks[i+1]], gender: 'U', avgAge: (autoSingleBlocks[i].avgAge + autoSingleBlocks[i+1].avgAge) / 2 });
+                    } else { otherBlocks.push(autoSingleBlocks[i]); }
                 }
 
                 let currIdx = 0; let stepDir = 1;
@@ -746,8 +736,7 @@
                                 rb.members.forEach(m => { groups[currIdx].members.push({...m, '객실명': rb.roomName}); });
                                 groups[currIdx].roomCount++;
                             });
-                        } 
-                        else {
+                        } else {
                             let rb = item;
                             if(!rb.isPre) { rb.roomName = autoRoomCounter++ + (rb.members.length === 1 ? '객실(1인)' : '객실'); }
                             rb.members.forEach(m => { groups[currIdx].members.push({...m, '객실명': rb.roomName}); });
@@ -757,16 +746,11 @@
                 }
 
                 distributeBlocks(pairedSingleBlocks.sort((a,b) => b.avgAge - a.avgAge));
-
                 let fRooms = otherBlocks.filter(r => r.gender === 'F').sort((a,b) => b.avgAge - a.avgAge);
                 let mRooms = otherBlocks.filter(r => r.gender === 'M').sort((a,b) => b.avgAge - a.avgAge);
                 let uRooms = otherBlocks.filter(r => r.gender === 'U').sort((a,b) => b.avgAge - a.avgAge);
-                
-                distributeBlocks(fRooms);
-                distributeBlocks(mRooms);
-                distributeBlocks(uRooms);
+                distributeBlocks(fRooms); distributeBlocks(mRooms); distributeBlocks(uRooms);
 
-                // 8. 엑셀 출력 데이터 포맷팅
                 let summaryData = []; let resultData = [];
                 groups.forEach((g, idx) => {
                     let groupName = (idx + 1) + '조';
@@ -776,24 +760,18 @@
                         summaryData.push({ '조': groupName, '총 인원': g.members.length + '명', '남성': (g.members.length - fCount) + '명', '여성': fCount + '명', '평균 연령': avgAge + '세', '할당 객실 수': g.roomCount + '개' });
                     }
                     g.members.sort((a, b) => b['나이'] - a['나이']);
-                    g.members.forEach(m => {
-                        resultData.push({ '조': groupName, '객실명': m['객실명'], '이름': m['이름'], '성별': m['성별'] || '', '나이': m['나이'] || '', '부서': m['부서'] || '', '휴대폰번호': m['휴대폰번호'] || '' });
-                    });
+                    g.members.forEach(m => { resultData.push({ '조': groupName, '객실명': m['객실명'], '이름': m['이름'], '성별': m['성별'] || '', '나이': m['나이'] || '', '부서': m['부서'] || '', '휴대폰번호': m['휴대폰번호'] || '' }); });
                 });
 
                 const wb = XLSX.utils.book_new(); 
                 const wsSummary = XLSX.utils.json_to_sheet(summaryData); applyStyle(wsSummary); if(!wsSummary['!cols']) wsSummary['!cols'] = Array(10).fill({ wch: 16 });
                 const wsResult = XLSX.utils.json_to_sheet(resultData); applyStyle(wsResult); if(!wsResult['!cols']) wsResult['!cols'] = Array(10).fill({ wch: 16 });
                 
-                XLSX.utils.book_append_sheet(wb, wsSummary, "1. 통합배정_통계_요약"); 
-                XLSX.utils.book_append_sheet(wb, wsResult, "2. 통합배정_상세결과");
+                XLSX.utils.book_append_sheet(wb, wsSummary, "1. 통합배정_통계_요약"); XLSX.utils.book_append_sheet(wb, wsResult, "2. 통합배정_상세결과");
                 
                 let fName = document.getElementById('outputFileNameLH').value.trim() || 'K-Brain_LH전용_통합배정결과';
                 XLSX.writeFile(wb, fName + '.xlsx'); 
-                
-                statusDiv.style.display = 'block'; 
-                setTimeout(() => { statusDiv.style.display = 'none'; }, 5000);
-                
+                statusDiv.style.display = 'block'; setTimeout(() => { statusDiv.style.display = 'none'; }, 5000);
             } catch (err) { alert("오류가 발생했습니다. 파일 형식을 확인해주세요."); }
         };
         reader.readAsArrayBuffer(fileInputLH.files[0]);
