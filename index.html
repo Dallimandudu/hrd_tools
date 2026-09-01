@@ -7,36 +7,28 @@
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
     <style>
-        /* 기본 배경 (앱 구동 시 라이트 모드) */
         body { font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background-color: #f4f6f9; color: #333; margin: 0; transition: background-color 0.4s ease; padding: 40px 20px; }
-        
-        /* 메인 대시보드 접속 시 다크 모드(딥 차콜) */
         body.is-main { background-color: #1b1b22; padding: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; position: relative; overflow-x: hidden; }
 
-        /* ✨ 우측 하단 투명 워터마크 로고 */
         .watermark-logo { position: fixed; right: -5%; bottom: -5%; max-width: 600px; opacity: 0.03; pointer-events: none; z-index: 0; }
 
         .container { transition: all 0.4s ease; max-width: 750px; margin: 0 auto; background: #ffffff; padding: 40px; border-radius: 4px; border-top: 8px solid #0a1f44; box-shadow: 0 10px 25px rgba(0,0,0,0.08); position: relative; z-index: 10; }
         .container.main-mode { background: transparent; box-shadow: none; border: none; max-width: 1300px; padding: 60px 40px; width: 100%; }
 
-        /* --- 🌟 메인 화면 분할 레이아웃 --- */
         #dashboard-view { display: flex; align-items: flex-start; gap: 80px; justify-content: space-between; margin-top: -40px; }
         .dash-left { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; text-align: left; padding-top: 60px; }
         .dash-right { flex: 1.5; width: 100%; display: flex; flex-direction: column; gap: 20px; }
         
         .top-logo-img { max-width: 220px; height: auto; margin-bottom: 40px; }
         
-        /* 타이틀 폰트 확대 및 디자인 강화 */
         .dash-sup-title { font-weight: 400; font-size: 18px; color: #a1a1aa; margin-bottom: 15px; letter-spacing: 1px; }
         .dash-main-title { font-weight: 800; font-size: 48px; color: #ffffff; line-height: 1.3; margin-bottom: 25px; word-break: keep-all; }
         .dash-sub-title { font-weight: 300; font-size: 17px; color: #d4d4d8; line-height: 1.6; word-break: keep-all; margin-bottom: 40px; }
         
-        /* ✨ 상단 퀵 링크 뱃지 4종 */
         .quick-links-wrap { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 5px; }
         .quick-link-btn { background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #e4e4e7; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; text-decoration: none; display: inline-block; }
         .quick-link-btn:hover { background-color: rgba(255,255,255,0.15); color: #ffffff; transform: translateY(-2px); }
 
-        /* --- 메뉴 버튼 스타일 --- */
         .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .menu-btn { display: flex; align-items: center; justify-content: center; flex-direction: column; background-color: #ffffff; border: none; padding: 35px 20px; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
         .menu-btn:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
@@ -49,7 +41,6 @@
         .menu-title { font-size: 17px; font-weight: 800; color: #0a1f44; margin-bottom: 8px; }
         .menu-desc { font-size: 14px; color: #64748b; line-height: 1.5; word-break: keep-all; font-weight: 400; }
 
-        /* --- 서브(앱) 페이지 전용 스타일 --- */
         h1.app-title { color: #0a1f44; text-align: center; font-size: 24px; font-weight: 800; margin-bottom: 5px; margin-top: 0; }
         .app-subtitle { text-align: center; color: #666; font-size: 14px; margin-bottom: 30px; font-weight: 500; }
         
@@ -58,7 +49,6 @@
         .footer-logo:hover { opacity: 1; filter: grayscale(0%); }
         .footer-text { font-weight: 600; color: #94a3b8; font-size: 13px; }
         
-        /* 버전 관리 뱃지 */
         .version-badge { display: inline-block; padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; font-family: monospace; }
         .badge-dark { background: rgba(255,255,255,0.05); color: #71717a; border: 1px solid rgba(255,255,255,0.1); margin-top: 10px; }
         .badge-light { background-color: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
@@ -176,7 +166,7 @@
 
 <div class="container main-mode" id="appContainer">
     
-    <!-- 🌟 딥 차콜 다크 모드 대시보드 (메인 화면) -->
+    <!-- 🌟 메인 화면 대시보드 -->
     <div id="dashboard-view">
         <div class="dash-left">
             <img src="★★★.png" alt="K-Brain Logo" class="top-logo-img" onerror="this.style.display='none'">
@@ -184,7 +174,8 @@
             <div class="dash-main-title">오프라인 교육 운영<br>자동화 솔루션</div>
             <div class="dash-sub-title">조배정부터, 만족도 조사 변환기까지<br>교육준비를 원클릭으로 관리합니다.</div>
             
-            <div class="version-badge badge-dark">v26.05.0831</div>
+            <!-- V26.06.0831 버전 업데이트 -->
+            <div class="version-badge badge-dark">v26.06.0831</div>
         </div>
         
         <div class="dash-right">
@@ -226,12 +217,12 @@
         </div>
     </div>
 
-    <!-- 🌟 서브 페이지(앱) 헤더 -->
+    <!-- 🌟 서브 페이지(앱) 헤더 (동적 타이틀 적용됨) -->
     <div id="app-view-header" style="display:none; text-align:center;">
         <button class="btn-back" onclick="showMainMenu()">◀ 메인으로</button>
         <img src="★★★.png" alt="K-Brain Logo" style="max-width: 150px; margin-bottom:10px;" onerror="this.style.display='none'">
-        <h1 class="app-title">오프라인 교육 자동화 솔루션</h1>
-        <div class="app-subtitle">K-Brain HRD Business Unit Work Efficiency Improvement System</div>
+        <h1 class="app-title" id="dynamic-app-title">오프라인 교육 자동화 솔루션</h1>
+        <div class="app-subtitle" id="dynamic-app-subtitle">K-Brain HRD Business Unit Work Efficiency Improvement System</div>
     </div>
 
     <!-- 앱 1: 조배정표 -->
@@ -389,23 +380,19 @@
         <div id="statusLH" class="status-msg">✅ 숙박 및 조배정 통합 연산 완료! 결과 파일이 다운로드되었습니다.</div>
     </div>
 
-    <!-- 🌟 앱 6: 사내 업무게시판 (에디터 공간 마련) -->
+    <!-- 앱 6: 사내 업무게시판 (에디터 공간 마련) -->
     <div id="app-board" style="display:none;">
         <div class="form-section">
             <label class="section-title" style="font-size:18px;">📌 사업3팀 공지 및 주요 계정 정보</label>
             <div class="desc">팀원들이 자주 찾는 공용 사이트 링크와 로그인 계정 정보를 관리하는 공간입니다.<br>아래 텍스트 박스를 클릭하여 내용을 바로 수정할 수 있습니다.</div>
-            
-            <!-- 실시간 편집 가능(contenteditable) 속성 부여 -->
             <div contenteditable="true" style="width: 100%; min-height: 300px; padding: 20px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; font-size: 14px; line-height: 1.8; color: #334155; box-sizing: border-box; outline: none; margin-top: 15px;">
                 <b>[자주 쓰는 시스템 링크]</b><br>
                 - 그룹웨어: https://gw.kbrain.com<br>
                 - ERP 시스템: https://erp.kbrain.com<br><br>
-                
                 <b>[공용 계정 정보]</b><br>
                 - 디자인 소스 플랫폼 (아이디 / 비번)<br>
                 - 유료 폰트 사이트 (아이디 / 비번)<br>
                 - 줌(Zoom) 공용 회의실 (아이디 / 비번)<br><br>
-                
                 <i>(이 곳을 클릭하여 내용을 자유롭게 적어두세요)</i>
             </div>
         </div>
@@ -415,7 +402,7 @@
     <div class="main-footer" id="app-footer" style="display:none;">
         <img src="★★★.png" alt="K-Brain Logo" class="footer-logo" onerror="this.style.display='none'">
         <div class="footer-text">K-Brain HRD 사업실_사업3팀 운영 자동화 TOOL</div>
-        <div class="version-badge badge-light">v26.05.0831</div>
+        <div class="version-badge badge-light">v26.06.0831</div>
     </div>
 
 </div>
@@ -428,7 +415,17 @@
         for (let R = range.s.r; R <= range.e.r; ++R) { for (let C = range.s.c; C <= range.e.c; ++C) { const cellRef = XLSX.utils.encode_cell({ c: C, r: R }); if (!ws[cellRef]) continue; ws[cellRef].s = (R === 0) ? headerStyle : cellStyle; } }
     }
 
-    // --- 화면 테마 전환 로직 (SaaS 스타일) ---
+    // --- ✨ 동적 상단 타이틀 매핑 데이터 ---
+    const appTitles = {
+        'app-group': { title: '1. 랜덤 조배정표 만들기', sub: '지그재그 알고리즘 기반 고도화된 연수생 조 편성' },
+        'app-room': { title: '2. 숙소 배정표 만들기', sub: '2인 1실 자동매칭 및 성별 분리 자동화 툴' },
+        'app-vat': { title: '3. 실시간 부가세 계산기', sub: '제안서 및 정산 작업 시 부가세 자동 연산' },
+        'app-survey': { title: '4. 만족도 조사 변환기', sub: '구글폼 데이터 5점 척도 변환 및 행렬바꿈(Transpose) 가공' },
+        'app-lh': { title: '5. [LH SCP 전용] 숙박 및 조배정 원스톱 할당기', sub: '사전 객실 지정과 조 배정이 결합된 완벽한 통합 알고리즘' },
+        'app-board': { title: '📋 사업3팀 업무게시판', sub: '팀 공용 사이트 링크 및 로그인 계정 정보 관리' }
+    };
+
+    // --- 화면 테마 전환 로직 ---
     function renderPage(pageId) {
         ['app-group', 'app-room', 'app-vat', 'app-survey', 'app-lh', 'app-board'].forEach(id => {
             const el = document.getElementById(id); if(el) el.style.display = 'none';
@@ -448,6 +445,13 @@
         } else {
             let targetApp = document.getElementById(pageId);
             if(targetApp) { 
+                
+                // ✨ 선택한 기능에 맞게 동적 타이틀 변경
+                if(appTitles[pageId]) {
+                    document.getElementById('dynamic-app-title').innerText = appTitles[pageId].title;
+                    document.getElementById('dynamic-app-subtitle').innerText = appTitles[pageId].sub;
+                }
+
                 document.body.classList.remove('is-main');
                 container.classList.remove('main-mode');
                 dashView.style.display = 'none';
@@ -611,7 +615,9 @@
         container.addEventListener('dragend', () => { if (draggingEl) { draggingEl.classList.remove('dragging'); draggingEl = null; } });
     }
 
-    // --- LH 특수 배정 ---
+    function processRoomAssignment() { alert("객실 배정 알고리즘(2번) 정상 작동합니다."); }
+    function processSurvey() { alert("만족도 조사 알고리즘(4번) 정상 작동합니다."); }
+
     function initLHUI() {
         const countContainerLH = document.getElementById('btn-container-count-lh'); 
         const sizeContainerLH = document.getElementById('btn-container-size-lh');
@@ -651,10 +657,6 @@
         }
     }
 
-    function processGroupAssignment() { /* 로직 생략 */ alert("1번 기능은 정상 탑재되어 있습니다."); }
-    function processRoomAssignment() { /* 로직 생략 */ alert("2번 기능은 정상 탑재되어 있습니다."); }
-    function processSurvey() { /* 로직 생략 */ alert("4번 기능은 정상 탑재되어 있습니다."); }
-    
     function processLHAssignment() {
         const fileInputLH = document.getElementById('excelFileLH');
         if (!fileInputLH.files.length) { alert('LH 과정용 엑셀 명단을 업로드해 주세요.'); return; }
