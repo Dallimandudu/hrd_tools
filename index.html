@@ -188,15 +188,15 @@
             <div class="dash-main-title">오프라인 교육 운영<br>자동화 솔루션</div>
             <div class="dash-sub-title">조배정부터, 만족도 조사 변환기까지<br>교육준비를 원클릭으로 관리합니다.</div>
             
-            <div class="version-badge badge-dark">v26.07.0831</div>
+            <div class="version-badge badge-dark">v26.08.0831</div>
         </div>
         
         <div class="dash-right">
             <!-- 🌟 상단 퀵 링크 4종 -->
             <div class="quick-links-wrap">
-                <a href="#" target="_blank" class="quick-link-btn">🔗 HRD사업실 매출시트</a>
-                <a href="#" target="_blank" class="quick-link-btn">🔗 HRD사업실 업무시트</a>
-                <a href="#" target="_blank" class="quick-link-btn">🔗 케이브레인 BMS</a>
+                <a href="https://docs.google.com/spreadsheets/d/1xtmdnhurCZHFQnLQqd-f8eEvQ3VeXHiuB6iyNEy_mH4/edit?usp=sharing" target="_blank" class="quick-link-btn">🔗 HRD사업실 매출시트</a>
+                <a href="https://hrd-weekly.vercel.app/" target="_blank" class="quick-link-btn">🔗 HRD 주간 업무 시트</a>
+                <a href="https://kbrainc.com/webadm/login" target="_blank" class="quick-link-btn">🔗 케이브레인 BMS</a>
                 <a href="javascript:void(0);" onclick="showApp('app-board')" class="quick-link-btn">📋 사업3팀 업무게시판</a>
             </div>
 
@@ -230,7 +230,7 @@
         </div>
     </div>
 
-    <!-- 🌟 서브 페이지(앱) 헤더 -->
+    <!-- 🌟 서브 페이지(앱) 헤더 (동적 타이틀 적용됨) -->
     <div id="app-view-header" style="display:none; text-align:center;">
         <button class="btn-back" onclick="showMainMenu()">◀ 메인으로</button>
         <img src="★★★.png" alt="K-Brain Logo" style="max-width: 150px; margin-bottom:10px;" onerror="this.style.display='none'">
@@ -399,7 +399,6 @@
             <label class="section-title" style="font-size:18px;">📌 사업3팀 공지 및 주요 계정 정보</label>
             <div class="desc">팀원들이 자유롭게 수정하고 실시간으로 공유할 수 있는 구글 문서 게시판입니다.<br>아래 액자 안을 클릭하면 내용을 바로 편집할 수 있습니다.</div>
             
-            <!-- 구글 문서 실시간 액자(iframe) 삽입 -->
             <div class="board-iframe-wrap">
                 <iframe class="board-iframe" src="https://docs.google.com/document/d/1J7i9PaGjOG09qkb7hFdDQL9mgUrAmKVgwDQW9mY3th0/edit?usp=sharing"></iframe>
             </div>
@@ -410,7 +409,7 @@
     <div class="main-footer" id="app-footer" style="display:none;">
         <img src="★★★.png" alt="K-Brain Logo" class="footer-logo" onerror="this.style.display='none'">
         <div class="footer-text">K-Brain HRD 사업실_사업3팀 운영 자동화 TOOL</div>
-        <div class="version-badge badge-light">v26.07.0831</div>
+        <div class="version-badge badge-light">v26.08.0831</div>
     </div>
 
 </div>
@@ -617,9 +616,195 @@
         container.addEventListener('dragend', () => { if (draggingEl) { draggingEl.classList.remove('dragging'); draggingEl = null; } });
     }
 
-    function processGroupAssignment() { /* 로직 생략 (동작) */ alert("조 배정 알고리즘(1번) 정상 작동합니다."); }
-    function processRoomAssignment() { /* 로직 생략 (동작) */ alert("객실 배정 알고리즘(2번) 정상 작동합니다."); }
-    function processSurvey() { /* 로직 생략 (동작) */ alert("만족도 조사 자동 변환기(4번) 정상 작동합니다."); }
+    function processGroupAssignment() {
+        const fileInputGroup = document.getElementById('excelFileGroup');
+        if (!fileInputGroup.files.length) { alert('조 배정용 명단을 업로드해 주세요.'); return; }
+        const reader = new FileReader(); const statusDiv = document.getElementById('statusGroup');
+        reader.onload = function(e) {
+            try {
+                const data = new Uint8Array(e.target.result); const workbook = XLSX.read(data, {type: 'array'});
+                const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+                if (jsonData.length === 0 || !('이름' in jsonData[0])) return;
+                let finalGroupCount = currentMode === 'groupSize' ? (Math.ceil(jsonData.length / selectedGroupSize) || 1) : selectedGroupCount;
+                let groups = Array.from({length: finalGroupCount}, () => []); let unassigned = [...jsonData]; 
+                document.getElementById('preassign-container-group').querySelectorAll('.preassign-row').forEach((row, bIdx) => {
+                    row.querySelectorAll('input').forEach(inp => { let name = inp.value.trim(); if(name && bIdx < finalGroupCount) { let pIdx = unassigned.findIndex(p => p['이름'] === name); if (pIdx !== -1) groups[bIdx].push(unassigned.splice(pIdx, 1)[0]); } });
+                });
+                let females = [], others = [];
+                unassigned.forEach(row => { let gender = (row['성별'] || '').toString().trim().toUpperCase(); if (considerGender && femaleKeywords.includes(gender)) females.push(row); else others.push(row); });
+                females.sort((a, b) => b['나이'] - a['나이']); others.sort((a, b) => b['나이'] - a['나이']);
+                let stepDir = 1, currIdx = 0;
+                if (considerGender) {
+                    while (females.length > 0) {
+                        let minSize = Math.min(...groups.map(g => g.length)); let cand = groups.map((g, i) => i).filter(i => groups[i].length === minSize);
+                        let nextIdx = -1;
+                        if (stepDir === 1) { let val = cand.filter(i => i >= currIdx); nextIdx = val.length > 0 ? Math.min(...val) : (stepDir = -1, Math.max(...cand)); } 
+                        else { let val = cand.filter(i => i <= currIdx); nextIdx = val.length > 0 ? Math.max(...val) : (stepDir = 1, Math.min(...cand)); }
+                        currIdx = nextIdx; groups[currIdx].push(females.shift());
+                    }
+                }
+                let remaining = [...females, ...others].sort((a, b) => b['나이'] - a['나이']);
+                while (remaining.length > 0) {
+                    let minSize = Math.min(...groups.map(g => g.length)); let cand = groups.map((g, i) => i).filter(i => groups[i].length === minSize);
+                    let nextIdx = -1;
+                    if (stepDir === 1) { let val = cand.filter(i => i >= currIdx); nextIdx = val.length > 0 ? Math.min(...val) : (stepDir = -1, Math.max(...cand)); } 
+                    else { let val = cand.filter(i => i <= currIdx); nextIdx = val.length > 0 ? Math.max(...val) : (stepDir = 1, Math.min(...cand)); }
+                    currIdx = nextIdx;
+                    let searchLimit = Math.min(5, remaining.length), selIdx = 0, minDeptCount = 999;
+                    for (let k = 0; k < searchLimit; k++) { let d = remaining[k]['부서'] || '소속없음'; let c = groups[currIdx].filter(p => (p['부서'] || '소속없음') === d).length; if (c < minDeptCount) { minDeptCount = c; selIdx = k; } if (minDeptCount === 0) break; }
+                    groups[currIdx].push(remaining.splice(selIdx, 1)[0]);
+                }
+                let summaryData = [], resultData = [];
+                groups.forEach((group, index) => {
+                    group.sort((a, b) => b['나이'] - a['나이']); group.forEach(p => { resultData.push({ '조': (index + 1) + '조', ...p }); });
+                    if (group.length > 0) {
+                        let fCount = group.filter(p => femaleKeywords.includes((p['성별']||'').toString().trim().toUpperCase())).length;
+                        let avgAge = (group.reduce((sum, p) => sum + Number(p['나이'] || 0), 0) / group.length).toFixed(1);
+                        summaryData.push({ '조': (index + 1) + '조', '총 인원': group.length + '명', '남성': (group.length - fCount) + '명', '여성': fCount + '명', '평균 연령': avgAge + '세' });
+                    }
+                });
+                const wb = XLSX.utils.book_new(); 
+                const wsSummary = XLSX.utils.json_to_sheet(summaryData); applyStyle(wsSummary); if(!wsSummary['!cols']) wsSummary['!cols'] = Array(10).fill({ wch: 16 });
+                const wsResult = XLSX.utils.json_to_sheet(resultData); applyStyle(wsResult); if(!wsResult['!cols']) wsResult['!cols'] = Array(10).fill({ wch: 16 });
+                XLSX.utils.book_append_sheet(wb, wsSummary, "1. 조별_통계_요약"); XLSX.utils.book_append_sheet(wb, wsResult, "2. 조배정_상세결과");
+                let fName = document.getElementById('outputFileNameGroup').value.trim() || 'K-Brain_오프라인교육_조배정표';
+                XLSX.writeFile(wb, fName + '.xlsx'); statusDiv.style.display = 'block'; setTimeout(() => { statusDiv.style.display = 'none'; }, 5000);
+            } catch (err) { alert("오류가 발생했습니다."); }
+        };
+        reader.readAsArrayBuffer(fileInputGroup.files[0]);
+    }
+
+    function processRoomAssignment() {
+        const fileInputRoom = document.getElementById('excelFileRoom');
+        if (!fileInputRoom.files.length) { alert('숙소 배정용 명단을 업로드해 주세요.'); return; }
+        const reader = new FileReader(); const statusDiv = document.getElementById('statusRoom');
+        reader.onload = function(e) {
+            try {
+                const data = new Uint8Array(e.target.result); const workbook = XLSX.read(data, {type: 'array'});
+                const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+                if (jsonData.length === 0 || !('이름' in jsonData[0])) return;
+                let roomResults = []; let unassigned = [...jsonData];
+                
+                document.getElementById('preassign-container-room').querySelectorAll('.preassign-row').forEach((row, rIdx) => {
+                    let inputs = row.querySelectorAll('input'); let name1 = inputs[0].value.trim(), name2 = inputs[1].value.trim(); let found = [];
+                    if(name1) { let idx1 = unassigned.findIndex(p => p['이름'] === name1); if(idx1 !== -1) found.push(unassigned.splice(idx1, 1)[0]); }
+                    if(name2) { let idx2 = unassigned.findIndex(p => p['이름'] === name2); if(idx2 !== -1) found.push(unassigned.splice(idx2, 1)[0]); }
+                    if(found.length > 0) {
+                        let gRaw = (found[0]['성별'] || '').toString().trim().toUpperCase(); let gCategory = '사전지정';
+                        if (maleKeywords.includes(gRaw)) gCategory = '남자'; else if (femaleKeywords.includes(gRaw)) gCategory = '여자';
+                        found.forEach(p => { roomResults.push({ '객실구분': gCategory, '객실명': `[사전] 동실-${rIdx+1}`, ...p, '배정인원': found.length === 2 ? '2인실' : '1인실' }); });
+                    }
+                });
+                let males = [], females = [], unknowns = [];
+                unassigned.forEach(row => { let g = (row['성별'] || '').toString().trim().toUpperCase(); if (maleKeywords.includes(g)) males.push(row); else if (femaleKeywords.includes(g)) females.push(row); else unknowns.push(row); });
+                males.sort((a,b) => b['나이'] - a['나이']); females.sort((a,b) => b['나이'] - a['나이']); unknowns.sort((a,b) => b['나이'] - a['나이']);
+                function assignRooms(list, categoryStr) {
+                    let count = 0;
+                    for (let i = 0; i < list.length; i += 2) { count++; let roomName = `${count}객실`; roomResults.push({ '객실구분': categoryStr, '객실명': roomName, ...list[i], '배정인원': (list[i+1] ? '2인실' : '1인실') }); if (list[i+1]) roomResults.push({ '객실구분': categoryStr, '객실명': roomName, ...list[i+1], '배정인원': '2인실' }); }
+                }
+                assignRooms(males, '남자'); assignRooms(females, '여자'); assignRooms(unknowns, '성별미상');
+                let totalMales = 0, totalFemales = 0, totalUnknowns = 0;
+                jsonData.forEach(row => { let g = (row['성별'] || '').toString().trim().toUpperCase(); if (femaleKeywords.includes(g)) totalFemales++; else if (maleKeywords.includes(g)) totalMales++; else totalUnknowns++; });
+                let uniqueMaleRooms = new Set(), uniqueFemaleRooms = new Set(), uniqueUnknownRooms = new Set();
+                roomResults.forEach(r => { let cat = r['객실구분']; if (cat === '여자') uniqueFemaleRooms.add(r['객실명']); else if (cat === '남자') uniqueMaleRooms.add(r['객실명']); else uniqueUnknownRooms.add(r['객실명']); });
+                let summaryData = [{ '학습자 총원': jsonData.length + '명', '남성 인원': totalMales + '명', '여성 인원': totalFemales + '명', '성별미상 인원': totalUnknowns + '명', '남성 배정 객실 (전체)': uniqueMaleRooms.size + '개', '여성 배정 객실 (전체)': uniqueFemaleRooms.size + '개', '총 필요 객실': (uniqueMaleRooms.size + uniqueFemaleRooms.size + uniqueUnknownRooms.size) + '개' }];
+                const newWorkbook = XLSX.utils.book_new(); 
+                const wsSummary = XLSX.utils.json_to_sheet(summaryData); applyStyle(wsSummary); if(!wsSummary['!cols']) wsSummary['!cols'] = Array(10).fill({ wch: 16 });
+                const wsResult = XLSX.utils.json_to_sheet(roomResults); applyStyle(wsResult); if(!wsResult['!cols']) wsResult['!cols'] = Array(10).fill({ wch: 16 });
+                XLSX.utils.book_append_sheet(newWorkbook, wsSummary, "1. 숙소배정_통계_요약"); XLSX.utils.book_append_sheet(newWorkbook, wsResult, "2. 숙소배정_상세결과");
+                let fName = document.getElementById('outputFileNameRoom').value.trim() || 'K-Brain_오프라인교육_숙소배정표';
+                XLSX.writeFile(newWorkbook, fName + '.xlsx'); statusDiv.style.display = 'block'; setTimeout(() => { statusDiv.style.display = 'none'; }, 5000);
+            } catch (error) { alert("오류가 발생했습니다."); }
+        };
+        reader.readAsArrayBuffer(fileInputRoom.files[0]);
+    }
+
+    function processSurvey() {
+        const fileInputSurvey = document.getElementById('excelFileSurvey');
+        if (!fileInputSurvey.files.length) { alert('만족도 조사 결과 엑셀 파일을 업로드해 주세요.'); return; }
+        
+        const reader = new FileReader(); 
+        const statusDiv = document.getElementById('statusSurvey');
+        
+        reader.onload = function(e) {
+            try {
+                const data = new Uint8Array(e.target.result); 
+                const workbook = XLSX.read(data, {type: 'array'});
+                const firstSheetName = workbook.SheetNames[0];
+                const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheetName], { defval: "" });
+                
+                if (jsonData.length === 0) { alert("업로드하신 엑셀 파일에 데이터가 없습니다."); return; }
+
+                let questions = [];
+                Object.keys(jsonData[0]).forEach(key => {
+                    if (!(key.replace(/\s+/g, '').includes('타임스탬프') || key.toLowerCase().includes('timestamp'))) {
+                        questions.push(key);
+                    }
+                });
+
+                let resultData = [];
+                
+                questions.forEach(q => {
+                    let rowObj = { '문항': q, '평균': '' };
+                    let sum = 0;
+                    let count = 0;
+
+                    jsonData.forEach((resp, idx) => {
+                        let originalValue = resp[q] || "";
+                        let convertedValue = originalValue;
+
+                        if (typeof originalValue === 'string') {
+                            let s = originalValue.trim();
+                            if (/^(매우 높음|매우 그렇다|매우 만족|매우만족)$/.test(s)) convertedValue = 5;
+                            else if (/^(높음|그렇다|만족)$/.test(s)) convertedValue = 4;
+                            else if (/^(보통|보통이다)$/.test(s)) convertedValue = 3;
+                            else if (/^(낮음|그렇지 않다|불만족)$/.test(s)) convertedValue = 2;
+                            else if (/^(매우 낮음|전혀 그렇지 않다|매우 불만족|매우불만족)$/.test(s)) convertedValue = 1;
+                        }
+
+                        rowObj[(idx + 1).toString()] = convertedValue;
+
+                        if (typeof convertedValue === 'number') {
+                            sum += convertedValue;
+                            count++;
+                        }
+                    });
+
+                    if (count > 0) {
+                        rowObj['평균'] = (sum / count).toFixed(2);
+                    }
+
+                    let finalRow = { '문항': rowObj['문항'], '평균': rowObj['평균'] };
+                    for(let i = 1; i <= jsonData.length; i++) {
+                        finalRow[i.toString()] = rowObj[i.toString()];
+                    }
+                    resultData.push(finalRow);
+                });
+                
+                const wb = XLSX.utils.book_new(); 
+                const wsResult = XLSX.utils.json_to_sheet(resultData); 
+                
+                applyStyle(wsResult);
+                
+                let colWidths = [ {wch: 70}, {wch: 10} ]; 
+                for(let i = 0; i < jsonData.length; i++) {
+                    colWidths.push({wch: 6}); 
+                }
+                wsResult['!cols'] = colWidths;
+                
+                XLSX.utils.book_append_sheet(wb, wsResult, "설문가공결과_행열변환");
+                
+                let fName = document.getElementById('outputFileNameSurvey').value.trim() || 'K-Brain_만족도조사_변환결과';
+                XLSX.writeFile(wb, fName + '.xlsx'); 
+                
+                statusDiv.style.display = 'block'; 
+                setTimeout(() => { statusDiv.style.display = 'none'; }, 5000);
+            } catch (error) { 
+                alert("파일을 처리하는 중 오류가 발생했습니다. 구글폼 다운로드 원본 파일이 맞는지 확인해주세요."); 
+            }
+        };
+        reader.readAsArrayBuffer(fileInputSurvey.files[0]);
+    }
 
     function initLHUI() {
         const countContainerLH = document.getElementById('btn-container-count-lh'); 
