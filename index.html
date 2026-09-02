@@ -18,40 +18,42 @@
 
         .container { transition: all 0.4s ease; max-width: 750px; margin: 0 auto; background: #ffffff; padding: 40px; border-radius: 4px; border-top: 8px solid #0a1f44; box-shadow: 0 10px 25px rgba(0,0,0,0.08); position: relative; z-index: 10; }
         
-        /* 메인 대시보드 가로폭 확장 */
-        .container.main-mode { background: transparent; box-shadow: none; border: none; max-width: 1400px; padding: 60px 40px; width: 100%; }
+        /* ✨ 메인 대시보드 전체 넓이 축소 (이전 버전의 안정적인 1200px로 롤백) */
+        .container.main-mode { background: transparent; box-shadow: none; border: none; max-width: 1200px; padding: 60px 40px; width: 100%; }
 
         /* --- 🌟 메인 화면 분할 레이아웃 --- */
-        #dashboard-view { display: flex; align-items: flex-start; gap: 40px; justify-content: space-between; margin-top: -60px; }
+        #dashboard-view { display: flex; align-items: flex-start; gap: 60px; justify-content: space-between; margin-top: -40px; }
         
-        /* 좌측 타이틀 상향 배치 및 폭 조정 */
-        .dash-left { flex: 0.8; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; text-align: left; padding-top: 0; }
-        .dash-right { flex: 1.8; width: 100%; display: flex; flex-direction: column; gap: 15px; }
+        /* 좌측 영역 */
+        .dash-left { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; text-align: left; padding-top: 40px; }
         
-        .top-logo-img { max-width: 220px; height: auto; margin-bottom: 50px; }
+        /* 우측 카드 영역 비율 조정 (카드가 너무 커지지 않게 축소) */
+        .dash-right { flex: 1.3; width: 100%; display: flex; flex-direction: column; gap: 15px; }
+        
+        .top-logo-img { max-width: 200px; height: auto; margin-bottom: 40px; }
         
         /* 타이틀 폰트 컬러 변경 및 디자인 강화 */
-        .dash-sup-title { font-weight: 600; font-size: 18px; color: #38bdf8; margin-bottom: 15px; letter-spacing: 1px; }
-        .dash-main-title { font-weight: 800; font-size: 52px; color: #ffffff; line-height: 1.3; margin-bottom: 20px; word-break: keep-all; }
-        .dash-sub-title { font-weight: 300; font-size: 18px; color: #d4d4d8; line-height: 1.6; word-break: keep-all; margin-bottom: 40px; }
+        .dash-sup-title { font-weight: 600; font-size: 16px; color: #38bdf8; margin-bottom: 15px; letter-spacing: 1px; }
+        .dash-main-title { font-weight: 800; font-size: 46px; color: #ffffff; line-height: 1.3; margin-bottom: 20px; word-break: keep-all; letter-spacing: -1px; }
+        .dash-sub-title { font-weight: 300; font-size: 16px; color: #d4d4d8; line-height: 1.6; word-break: keep-all; margin-bottom: 40px; }
         
-        /* ✨ 상단 퀵 링크 뱃지 (끝과 끝선 완벽 정렬 space-between) */
-        .quick-links-wrap { display: flex; flex-wrap: nowrap; justify-content: space-between; width: 100%; padding-bottom: 5px; }
-        .quick-link-btn { background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #e4e4e7; padding: 7px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; text-decoration: none; display: inline-flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
+        /* ✨ 상단 퀵 링크 뱃지 (무조건 1줄 강제 고정, 글씨 및 패딩 축소) */
+        .quick-links-wrap { display: flex; flex-wrap: nowrap; justify-content: space-between; gap: 6px; width: 100%; padding-bottom: 5px; }
+        .quick-link-btn { background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #e4e4e7; padding: 6px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; text-decoration: none; display: inline-flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
         .quick-link-btn:hover { background-color: rgba(255,255,255,0.15); color: #ffffff; transform: translateY(-2px); }
 
-        /* --- 메뉴 버튼 스타일 (기능칸 축소 & 은은한 화이트 그림자) --- */
-        .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
-        .menu-btn { display: flex; align-items: center; justify-content: center; flex-direction: column; background-color: #ffffff; border: none; padding: 22px 15px; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; text-align: center; box-shadow: 0 5px 20px rgba(255,255,255,0.05); }
+        /* --- 메뉴 버튼 스타일 (기능칸 축소 & 은은한 화이트 그림자 & 2x3 배열) --- */
+        .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .menu-btn { display: flex; align-items: center; justify-content: center; flex-direction: column; background-color: #ffffff; border: none; padding: 25px 15px; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; text-align: center; box-shadow: 0 5px 20px rgba(255,255,255,0.05); }
         .menu-btn:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(255,255,255,0.1); }
         
-        .menu-btn.special-lh { grid-column: 1 / -1; background-color: #f0fdf4; border: 1px solid #dcfce7; box-shadow: 0 5px 20px rgba(255,255,255,0.05); }
+        .menu-btn.special-lh { background-color: #f0fdf4; border: 1px solid #dcfce7; box-shadow: 0 5px 20px rgba(255,255,255,0.05); }
         .menu-btn.special-lh:hover { background-color: #dcfce7; border-color: #bbf7d0; box-shadow: 0 8px 25px rgba(255,255,255,0.1); }
         .menu-btn.special-lh .menu-title { color: #065f46; }
 
-        .menu-icon { font-size: 34px; margin-bottom: 12px; }
-        .menu-title { font-size: 16px; font-weight: 800; color: #0a1f44; margin-bottom: 6px; }
-        .menu-desc { font-size: 13px; color: #64748b; line-height: 1.4; word-break: keep-all; font-weight: 400; }
+        .menu-icon { font-size: 32px; margin-bottom: 10px; }
+        .menu-title { font-size: 15px; font-weight: 800; color: #0a1f44; margin-bottom: 6px; }
+        .menu-desc { font-size: 12.5px; color: #64748b; line-height: 1.4; word-break: keep-all; font-weight: 400; }
 
         /* --- 서브(앱) 페이지 전용 스타일 --- */
         h1.app-title { color: #0a1f44; text-align: center; font-size: 24px; font-weight: 800; margin-bottom: 5px; margin-top: 0; }
@@ -140,13 +142,13 @@
         .board-iframe-wrap { width: 100%; height: 600px; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; margin-top: 15px; }
         .board-iframe { width: 100%; height: 100%; border: none; }
 
-        @media screen and (max-width: 1000px) {
+        @media screen and (max-width: 950px) {
             body.is-main { padding: 30px 20px; align-items: flex-start; }
             .container.main-mode { padding: 20px 0; }
             #dashboard-view { flex-direction: column; gap: 40px; margin-top: 0; }
             .dash-left { padding-top: 0; text-align: center; align-items: center; width: 100%; }
             .dash-main-title { font-size: 36px; }
-            .quick-links-wrap { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 10px; gap: 8px; }
+            .quick-links-wrap { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 10px; }
             .menu-grid { grid-template-columns: 1fr; }
             .watermark-logo { display: none; }
         }
@@ -157,11 +159,9 @@
             h1.app-title { font-size: 20px; word-break: keep-all; line-height: 1.3; margin-top: 0; }
             .app-subtitle { font-size: 13px; margin-bottom: 20px; }
             .btn-back { position: static; margin-bottom: 20px; display: inline-flex; padding: 0; font-size: 15px; }
-
             .form-section { padding: 15px; margin-bottom: 20px; }
             .number-btn-wrap { gap: 5px; }
             .num-btn { padding: 10px 0; font-size: 14px; }
-
             .preassign-row { flex-wrap: wrap; padding-right: 40px; } 
             .drag-handle { margin-bottom: 8px; }
             .preassign-label { margin-bottom: 8px; text-align: left; width: auto; flex: 1; font-size: 14px; }
@@ -169,7 +169,6 @@
             .group-inputs { grid-template-columns: repeat(3, 1fr); gap: 6px; } 
             .room-inputs { grid-template-columns: 1fr; gap: 6px; } 
             .btn-remove { position: absolute; right: 5px; top: 5px; padding: 10px; }
-
             .vat-wrap { padding: 20px 15px; }
             .vat-row { flex-direction: column; align-items: flex-start; border-bottom: none; padding-bottom: 0; margin-bottom: 20px; }
             .vat-label { width: 100%; margin-bottom: 8px; font-size: 15px; }
@@ -192,7 +191,7 @@
             <div class="dash-main-title">오프라인 교육 운영<br>자동화 솔루션</div>
             <div class="dash-sub-title">조배정부터, 만족도 조사 변환기까지<br>교육준비를 원클릭으로 관리합니다.</div>
             
-            <div class="version-badge badge-dark">v26.13.0831</div>
+            <div class="version-badge badge-dark">v26.14.0831</div>
         </div>
         
         <div class="dash-right">
@@ -205,7 +204,7 @@
                 <a href="javascript:void(0);" onclick="showApp('app-board')" class="quick-link-btn">📋 사업3팀 업무게시판</a>
             </div>
 
-            <!-- 🌟 메뉴 카드 (은은한 화이트 그림자 및 콤팩트 사이즈 적용) -->
+            <!-- 🌟 메뉴 카드 (기능칸 축소 & 6번 슬롯 추가로 2x3 배열 완성) -->
             <div class="menu-grid">
                 <div class="menu-btn" onclick="showApp('app-group')">
                     <div class="menu-icon">👥</div>
@@ -229,8 +228,14 @@
                 </div>
                 <div class="menu-btn special-lh" onclick="showApp('app-lh')">
                     <div class="menu-icon">🏢</div>
-                    <div class="menu-title">5. [LH SCP 전용] 숙박 및 조배정 원스톱 할당기</div>
-                    <div class="menu-desc"><b>"룸메이트는 무조건 같은 조원으로 편성!"</b><br>사전 객실 지정과 조 배정이 결합된 완벽한 통합 알고리즘</div>
+                    <div class="menu-title">5. [LH SCP 전용] 통합 할당기</div>
+                    <div class="menu-desc"><b>"룸메이트는 무조건 같은 조원 편성!"</b><br>사전 객실 지정과 조 배정이 결합된 알고리즘</div>
+                </div>
+                <!-- ✨ 6번 신규 슬롯: 업데이트 대기중 -->
+                <div class="menu-btn" onclick="alert('업무 효율화를 위한 새로운 기능을 준비 중입니다.');" style="background-color: #f8fafc; border: 1px dashed #cbd5e1; box-shadow: none;">
+                    <div class="menu-icon" style="filter: grayscale(100%); opacity: 0.6;">🛠️</div>
+                    <div class="menu-title" style="color: #94a3b8;">6. 업데이트 대기중</div>
+                    <div class="menu-desc" style="color: #94a3b8;">현장 업무 효율화를 위한<br>신규 기능이 준비 중입니다.</div>
                 </div>
             </div>
         </div>
@@ -415,7 +420,7 @@
     <div class="main-footer" id="app-footer" style="display:none;">
         <img src="★★★.png" alt="K-Brain Logo" class="footer-logo" onerror="this.style.display='none'">
         <div class="footer-text">K-Brain HRD 사업실_사업3팀 운영 자동화 TOOL</div>
-        <div class="version-badge badge-light">v26.13.0831</div>
+        <div class="version-badge badge-light">v26.14.0831</div>
     </div>
 
 </div>
@@ -433,7 +438,7 @@
         'app-room': { title: '2. 숙소 배정표 만들기', sub: '2인 1실 자동매칭 및 성별 분리 자동화 툴' },
         'app-vat': { title: '3. 실시간 부가세 계산기', sub: '제안서 및 정산 작업 시 부가세 자동 연산' },
         'app-survey': { title: '4. 만족도 조사 변환기', sub: '구글폼 데이터 5점 척도 변환 및 행렬바꿈(Transpose) 가공' },
-        'app-lh': { title: '5. [LH SCP 전용] 숙박 및 조배정 원스톱 할당기', sub: '사전 객실 지정과 조 배정이 결합된 완벽한 통합 알고리즘' },
+        'app-lh': { title: '5. [LH SCP 전용] 통합 할당기', sub: '사전 객실 지정과 조 배정이 결합된 완벽한 통합 알고리즘' },
         'app-board': { title: '📋 사업3팀 업무게시판', sub: '팀 공용 사이트 링크 및 로그인 계정 정보 관리' }
     };
 
