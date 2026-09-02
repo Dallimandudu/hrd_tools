@@ -30,28 +30,28 @@
         
         .top-logo-img { max-width: 220px; height: auto; margin-bottom: 50px; }
         
-        /* ✨ 타이틀 폰트 컬러 변경 및 디자인 강화 */
-        .dash-sup-title { font-weight: 600; font-size: 18px; color: #38bdf8; /* 하늘색으로 변경 */ margin-bottom: 15px; letter-spacing: 1px; }
+        /* 타이틀 폰트 컬러 변경 및 디자인 강화 */
+        .dash-sup-title { font-weight: 600; font-size: 18px; color: #38bdf8; margin-bottom: 15px; letter-spacing: 1px; }
         .dash-main-title { font-weight: 800; font-size: 52px; color: #ffffff; line-height: 1.3; margin-bottom: 20px; word-break: keep-all; }
         .dash-sub-title { font-weight: 300; font-size: 18px; color: #d4d4d8; line-height: 1.6; word-break: keep-all; margin-bottom: 40px; }
         
-        /* ✨ 상단 퀵 링크 뱃지 (무조건 1줄 강제 고정, 글씨 및 패딩 축소) */
-        .quick-links-wrap { display: flex; flex-wrap: nowrap; gap: 6px; justify-content: flex-start; width: 100%; padding-bottom: 5px; }
-        .quick-link-btn { background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #e4e4e7; padding: 6px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; text-decoration: none; display: inline-flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
+        /* ✨ 상단 퀵 링크 뱃지 (끝과 끝선 완벽 정렬 space-between) */
+        .quick-links-wrap { display: flex; flex-wrap: nowrap; justify-content: space-between; width: 100%; padding-bottom: 5px; }
+        .quick-link-btn { background-color: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #e4e4e7; padding: 7px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; text-decoration: none; display: inline-flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
         .quick-link-btn:hover { background-color: rgba(255,255,255,0.15); color: #ffffff; transform: translateY(-2px); }
 
-        /* --- 메뉴 버튼 스타일 --- */
-        .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .menu-btn { display: flex; align-items: center; justify-content: center; flex-direction: column; background-color: #ffffff; border: none; padding: 35px 20px; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
-        .menu-btn:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
+        /* --- 메뉴 버튼 스타일 (기능칸 축소 & 은은한 화이트 그림자) --- */
+        .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+        .menu-btn { display: flex; align-items: center; justify-content: center; flex-direction: column; background-color: #ffffff; border: none; padding: 22px 15px; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; text-align: center; box-shadow: 0 5px 20px rgba(255,255,255,0.05); }
+        .menu-btn:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(255,255,255,0.1); }
         
-        .menu-btn.special-lh { grid-column: 1 / -1; background-color: #f0fdf4; border: 1px solid #dcfce7; }
-        .menu-btn.special-lh:hover { background-color: #dcfce7; border-color: #bbf7d0; }
+        .menu-btn.special-lh { grid-column: 1 / -1; background-color: #f0fdf4; border: 1px solid #dcfce7; box-shadow: 0 5px 20px rgba(255,255,255,0.05); }
+        .menu-btn.special-lh:hover { background-color: #dcfce7; border-color: #bbf7d0; box-shadow: 0 8px 25px rgba(255,255,255,0.1); }
         .menu-btn.special-lh .menu-title { color: #065f46; }
 
-        .menu-icon { font-size: 42px; margin-bottom: 15px; }
-        .menu-title { font-size: 17px; font-weight: 800; color: #0a1f44; margin-bottom: 8px; }
-        .menu-desc { font-size: 14px; color: #64748b; line-height: 1.5; word-break: keep-all; font-weight: 400; }
+        .menu-icon { font-size: 34px; margin-bottom: 12px; }
+        .menu-title { font-size: 16px; font-weight: 800; color: #0a1f44; margin-bottom: 6px; }
+        .menu-desc { font-size: 13px; color: #64748b; line-height: 1.4; word-break: keep-all; font-weight: 400; }
 
         /* --- 서브(앱) 페이지 전용 스타일 --- */
         h1.app-title { color: #0a1f44; text-align: center; font-size: 24px; font-weight: 800; margin-bottom: 5px; margin-top: 0; }
@@ -146,7 +146,7 @@
             #dashboard-view { flex-direction: column; gap: 40px; margin-top: 0; }
             .dash-left { padding-top: 0; text-align: center; align-items: center; width: 100%; }
             .dash-main-title { font-size: 36px; }
-            .quick-links-wrap { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 10px; }
+            .quick-links-wrap { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 10px; gap: 8px; }
             .menu-grid { grid-template-columns: 1fr; }
             .watermark-logo { display: none; }
         }
@@ -192,11 +192,11 @@
             <div class="dash-main-title">오프라인 교육 운영<br>자동화 솔루션</div>
             <div class="dash-sub-title">조배정부터, 만족도 조사 변환기까지<br>교육준비를 원클릭으로 관리합니다.</div>
             
-            <div class="version-badge badge-dark">v26.12.0831</div>
+            <div class="version-badge badge-dark">v26.13.0831</div>
         </div>
         
         <div class="dash-right">
-            <!-- 🌟 상단 퀵 링크 5종 (강제 1줄 고정 최적화) -->
+            <!-- 🌟 상단 퀵 링크 5종 (끝선 완벽 정렬: justify-content space-between) -->
             <div class="quick-links-wrap">
                 <a href="https://docs.google.com/spreadsheets/d/1xtmdnhurCZHFQnLQqd-f8eEvQ3VeXHiuB6iyNEy_mH4/edit?usp=sharing" target="_blank" class="quick-link-btn">📈 HRD사업실 매출시트</a>
                 <a href="https://hrd-weekly.vercel.app/" target="_blank" class="quick-link-btn">📅 HRD사업실 업무시트</a>
@@ -205,6 +205,7 @@
                 <a href="javascript:void(0);" onclick="showApp('app-board')" class="quick-link-btn">📋 사업3팀 업무게시판</a>
             </div>
 
+            <!-- 🌟 메뉴 카드 (은은한 화이트 그림자 및 콤팩트 사이즈 적용) -->
             <div class="menu-grid">
                 <div class="menu-btn" onclick="showApp('app-group')">
                     <div class="menu-icon">👥</div>
@@ -414,7 +415,7 @@
     <div class="main-footer" id="app-footer" style="display:none;">
         <img src="★★★.png" alt="K-Brain Logo" class="footer-logo" onerror="this.style.display='none'">
         <div class="footer-text">K-Brain HRD 사업실_사업3팀 운영 자동화 TOOL</div>
-        <div class="version-badge badge-light">v26.12.0831</div>
+        <div class="version-badge badge-light">v26.13.0831</div>
     </div>
 
 </div>
