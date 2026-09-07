@@ -13,7 +13,11 @@
         /* 🌟 메인 대시보드 접속 시 완전한 다크(블랙) 모드 */
         body.is-main { background-color: #0f0f13; padding: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; position: relative; overflow-x: hidden; }
 
-        .watermark-logo { position: fixed; right: -5%; bottom: -5%; max-width: 600px; opacity: 0.02; pointer-events: none; z-index: 0; }
+        /* ✨ 우주 파티클 캔버스 (메인에서만 노출) */
+        #starfield { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; display: none; }
+        body.is-main #starfield { display: block; }
+
+        .watermark-logo { position: fixed; right: -5%; bottom: -5%; max-width: 600px; opacity: 0.02; pointer-events: none; z-index: 1; }
 
         .container { transition: all 0.4s ease; max-width: 750px; margin: 0 auto; background: #ffffff; padding: 40px; border-radius: 4px; border-top: 8px solid #0a1f44; box-shadow: 0 10px 25px rgba(0,0,0,0.08); position: relative; z-index: 10; }
         
@@ -30,8 +34,15 @@
         .dash-sup-title { font-weight: 300; font-size: 16px; color: #a1a1aa; margin-bottom: 15px; letter-spacing: 1px; }
         .dash-main-title { font-weight: 800; font-size: 52px; color: #ffffff; line-height: 1.2; margin-bottom: 20px; word-break: keep-all; letter-spacing: -1px; }
         .gradient-text { background: linear-gradient(90deg, #38bdf8 0%, #818cf8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .dash-sub-title { font-weight: 300; font-size: 16px; color: #a1a1aa; line-height: 1.6; word-break: keep-all; margin-bottom: 40px; }
+        .dash-sub-title { font-weight: 300; font-size: 16px; color: #a1a1aa; line-height: 1.6; word-break: keep-all; margin-bottom: 30px; }
         
+        /* ✨ 신규 네온 버튼 & 상태 텍스트 UI */
+        .status-text { color: #38e4d7; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; opacity: 1; transition: opacity 0.5s ease; text-shadow: 0 0 10px rgba(56, 228, 215, 0.5); margin-top: 10px; margin-bottom: 5px; }
+        .record-btn { background-color: #38e4d7; color: #041214; border: none; padding: 12px 28px; border-radius: 30px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 0 20px rgba(56, 228, 215, 0.4), inset 0 0 8px rgba(255, 255, 255, 0.4); transition: all 0.3s ease; }
+        .record-btn:hover { box-shadow: 0 0 35px rgba(56, 228, 215, 0.7), inset 0 0 12px rgba(255, 255, 255, 0.6); transform: scale(1.02); background-color: #4df5e8; }
+        .record-icon { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border: 2px solid #041214; border-radius: 50%; position: relative; }
+        .record-icon::after { content: ''; width: 6px; height: 6px; background-color: #041214; border-radius: 50%; position: absolute; }
+
         /* 상단 퀵 링크 뱃지 */
         .quick-links-wrap { display: flex; flex-wrap: nowrap; justify-content: space-between; gap: 6px; width: 100%; padding-bottom: 5px; }
         .quick-link-btn { background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #d4d4d8; padding: 6px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 400; cursor: pointer; transition: all 0.2s ease; text-decoration: none; display: inline-flex; align-items: center; white-space: nowrap; flex-shrink: 0; }
@@ -176,11 +187,9 @@
             h1.app-title { font-size: 20px; word-break: keep-all; line-height: 1.3; margin-top: 0; }
             .app-subtitle { font-size: 13px; margin-bottom: 20px; }
             .btn-back { position: static; margin-bottom: 20px; display: inline-flex; padding: 0; font-size: 15px; }
-
             .form-section { padding: 15px; margin-bottom: 20px; }
             .number-btn-wrap { gap: 5px; }
             .num-btn { padding: 10px 0; font-size: 14px; }
-
             .preassign-row { flex-wrap: wrap; padding-right: 40px; } 
             .drag-handle { margin-bottom: 8px; }
             .preassign-label { margin-bottom: 8px; text-align: left; width: auto; flex: 1; font-size: 14px; }
@@ -188,7 +197,6 @@
             .group-inputs { grid-template-columns: repeat(3, 1fr); gap: 6px; } 
             .room-inputs { grid-template-columns: 1fr; gap: 6px; } 
             .btn-remove { position: absolute; right: 5px; top: 5px; padding: 10px; }
-
             .vat-wrap { padding: 20px 15px; }
             .vat-row { flex-direction: column; align-items: flex-start; border-bottom: none; padding-bottom: 0; margin-bottom: 20px; }
             .vat-label { width: 100%; margin-bottom: 8px; font-size: 15px; }
@@ -197,6 +205,9 @@
     </style>
 </head>
 <body class="is-main">
+
+<!-- 🌟 우주 파티클 캔버스 (메인에서만 노출) -->
+<canvas id="starfield"></canvas>
 
 <!-- 워터마크 로고 -->
 <img src="★★★.png" alt="K-Brain Logo" class="watermark-logo" onerror="this.style.display='none'">
@@ -209,6 +220,7 @@
             <img src="★★★.png" alt="K-Brain Logo" class="top-logo-img" onerror="this.style.display='none'">
             <div class="dash-sup-title">K-BRAIN 사업3팀 자동화 TOOL</div>
             
+            <!-- ✨ 오프라인 교육 운영 (화이트) / 솔루션 (그라데이션) 분리 -->
             <div class="dash-main-title">
                 오프라인 교육 운영<br>
                 <span class="gradient-text">자동화 솔루션</span>
@@ -216,7 +228,14 @@
             
             <div class="dash-sub-title">조배정부터, 만족도 조사 변환기까지<br>교육준비를 원클릭으로 관리합니다.</div>
             
-            <div class="version-badge badge-dark">v26.16.0831</div>
+            <div class="version-badge badge-dark">v26.17.0831</div>
+
+            <!-- 🌟 우주 네온 버튼 및 텍스트 효과 -->
+            <div class="status-text" id="statusText">Morphing frequency...</div>
+            <button class="record-btn" onclick="alert('시스템 업데이트가 확인되었습니다.')">
+                <span class="record-icon"></span>
+                Commence Recording
+            </button>
         </div>
         
         <div class="dash-right">
@@ -258,7 +277,7 @@
                 </div>
                 <!-- 6번 슬롯 (업데이트 대기중) -->
                 <div class="menu-btn" onclick="alert('업무 효율화를 위한 새로운 기능을 준비 중입니다.');" style="background: linear-gradient(145deg, #1f1f23 0%, #151518 100%); cursor: default;">
-                    <div class="menu-icon" style="opacity: 0.5;">🛠️</div>
+                    <div class="menu-icon" style="filter: grayscale(100%); opacity: 0.3;">🛠️</div>
                     <div class="menu-title" style="color: #52525b;">6. 시스템 업데이트 대기중</div>
                     <div class="menu-desc" style="color: #3f3f46;">현장 업무 효율화를 위한 신규 기능이 곧 준비됩니다.</div>
                 </div>
@@ -445,11 +464,78 @@
     <div class="main-footer" id="app-footer" style="display:none;">
         <img src="★★★.png" alt="K-Brain Logo" class="footer-logo" onerror="this.style.display='none'">
         <div class="footer-text">K-Brain HRD 사업실_사업3팀 운영 자동화 TOOL</div>
-        <div class="version-badge badge-light">v26.16.0831</div>
+        <div class="version-badge badge-light">v26.17.0831</div>
     </div>
 
 </div>
 
+<!-- ✨ 우주 파티클 배경 및 애니메이션 JS -->
+<script>
+    const messages = [
+        "System Core Active...", 
+        "Awaiting User Input...", 
+        "Calibrating Modules...", 
+        "Ready to Deploy..."
+    ];
+    let msgIndex = 0;
+    const statusEl = document.getElementById('statusText');
+
+    if(statusEl) {
+        setInterval(() => {
+            statusEl.style.opacity = 0;
+            setTimeout(() => {
+                msgIndex = (msgIndex + 1) % messages.length;
+                statusEl.innerText = messages[msgIndex];
+                statusEl.style.opacity = 1;
+            }, 500);
+        }, 3500);
+    }
+
+    const canvas = document.getElementById('starfield');
+    if(canvas) {
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        const stars = [];
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        for (let i = 0; i < 300; i++) {
+            stars.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                size: Math.random() * 2.5 + 0.5,
+                opacity: Math.random(),
+                speedY: Math.random() * 0.4 + 0.1,
+                pulse: Math.random() * 0.02
+            });
+        }
+
+        function animateStars() {
+            // 다크 모드 배경색상과 맞춰 부드러운 잔상 효과
+            ctx.fillStyle = 'rgba(15, 15, 19, 0.8)'; 
+            ctx.fillRect(0, 0, width, height);
+            stars.forEach(star => {
+                ctx.fillStyle = `rgba(56, 228, 215, ${star.opacity})`;
+                ctx.fillRect(star.x, star.y, star.size, star.size);
+                star.y -= star.speedY;
+                star.opacity += star.pulse;
+                if (star.opacity > 1 || star.opacity < 0.1) star.pulse = -star.pulse;
+                if (star.y < 0) { star.y = height; star.x = Math.random() * width; }
+            });
+            requestAnimationFrame(animateStars);
+        }
+        animateStars();
+    }
+</script>
+
+<!-- 기존 업무 자동화 JS 로직 -->
 <script>
     function applyStyle(ws) {
         if (!ws['!ref']) return; const range = XLSX.utils.decode_range(ws['!ref']);
