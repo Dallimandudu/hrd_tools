@@ -116,8 +116,6 @@
         .num-btn.active { background-color: #0a1f44; color: white; border-color: #0a1f44; }
         .num-btn.btn-sm { padding: 6px 0; font-size: 13px; }
         
-        .ox-btn-wrap { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
-
         input[type="text"] { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; font-family: inherit; font-size: 13px; margin-top: 5px; }
         input[type="text"]:focus { border-color: #0a1f44; outline: none; }
         input[type="text"]::placeholder { color: #94a3b8; font-family: inherit; }
@@ -569,13 +567,38 @@
     const maleKeywords = ['남성', '남', '남자', 'M', 'MALE'];
     const femaleKeywords = ['여성', '여', '여자', 'F', 'FEMALE'];
 
+    // 🔧 [최적화] 여러 process 함수에서 거의 동일하게 반복되던 보일러플레이트 4종을
+    // 공용 함수로 통합했습니다. 각 함수가 만들어내는 결과(엑셀 컬럼 너비, 완료 메시지 노출/숨김,
+    // 파일명 결정, 숫자 선택 버튼 생성)는 기존 코드와 완전히 동일합니다.
+    function ensureColWidths(ws, count = 10, width = 16) {
+        if (!ws['!cols']) ws['!cols'] = Array(count).fill({ wch: width });
+    }
+    function showStatusMessage(el, duration = 5000) {
+        el.style.display = 'block';
+        setTimeout(() => { el.style.display = 'none'; }, duration);
+    }
+    function getOutputFileName(inputId, defaultName) {
+        return document.getElementById(inputId).value.trim() || defaultName;
+    }
+    function createNumberButtons(containerId, idPrefix, groupClasses, onSelect, defaultActiveNum) {
+        const container = document.getElementById(containerId);
+        for (let i = 1; i <= 10; i++) {
+            let btn = document.createElement('div');
+            btn.className = ['num-btn', groupClasses, (i === defaultActiveNum ? 'active' : '')].filter(Boolean).join(' ');
+            btn.innerText = i;
+            btn.id = `${idPrefix}-${i}`;
+            btn.onclick = (e) => { e.stopPropagation(); onSelect(i); };
+            container.appendChild(btn);
+        }
+    }
+
     function downloadTemplate() {
         const templateData = [ { '이름': '홍길동', '성별': '남자', '나이': 35, '부서': '경영기획팀', '휴대폰번호': '010-1234-5678' }, { '이름': '김연수', '성별': '여자', '나이': 29, '부서': '인재개발원', '휴대폰번호': '010-8765-4321' }, { '이름': '박교육', '성별': '', '나이': 32, '부서': '공공사업부', '휴대폰번호': '010-1111-2222' } ];
-        const ws = XLSX.utils.json_to_sheet(templateData); applyStyle(ws); if(!ws['!cols']) ws['!cols'] = Array(5).fill({ wch: 16 });
+        const ws = XLSX.utils.json_to_sheet(templateData); applyStyle(ws); ensureColWidths(ws, 5, 16);
         const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "명단양식"); XLSX.writeFile(wb, 'K-Brain_연수생_표준명단양식.xlsx');
     }
 
-    let currentMode = 'groupCount', selectedGroupCount = 5, selectedGroupSize = 0, considerGender = true;
+    let currentMode = 'groupCount', selectedGroupCount = 5, selectedGroupSize = 0;
     let currentModeLH = 'groupCountLH', selectedGroupCountLH = 5, selectedGroupSizeLH = 0;
     
     let singleRoomGenderLH = { 1: 'M', 2: 'M' }; 
@@ -590,11 +613,8 @@
         if (initialHash && document.getElementById(initialHash)) { history.replaceState({ page: initialHash }, '', '#' + initialHash); renderPage(initialHash); } 
         else { history.replaceState({ page: 'main' }, '', window.location.pathname); renderPage('main'); }
 
-        const countContainer = document.getElementById('btn-container-count'); const sizeContainer = document.getElementById('btn-container-size');
-        for(let i=1; i<=10; i++) {
-            let btnC = document.createElement('div'); btnC.className = 'num-btn btn-count ' + (i === 5 ? 'active' : ''); btnC.innerText = i; btnC.id = 'btn-count-' + i; btnC.onclick = (e) => { e.stopPropagation(); selectNumber('count', i); }; countContainer.appendChild(btnC);
-            let btnS = document.createElement('div'); btnS.className = 'num-btn btn-size'; btnS.innerText = i; btnS.id = 'btn-size-' + i; btnS.onclick = (e) => { e.stopPropagation(); selectNumber('size', i); }; sizeContainer.appendChild(btnS);
-        }
+        createNumberButtons('btn-container-count', 'btn-count', 'btn-count', (i) => selectNumber('count', i), 5);
+        createNumberButtons('btn-container-size', 'btn-size', 'btn-size', (i) => selectNumber('size', i));
         updateGroupPreassignUI('preassign-container-group', currentMode, selectedGroupCount); 
         
         const roomContainer = document.getElementById('preassign-container-room');
@@ -717,17 +737,15 @@
                     row.querySelectorAll('input').forEach(inp => { let name = inp.value.trim(); if(name && bIdx < finalGroupCount) { let pIdx = unassigned.findIndex(p => p['이름'] === name); if (pIdx !== -1) groups[bIdx].push(unassigned.splice(pIdx, 1)[0]); } });
                 });
                 let females = [], others = [];
-                unassigned.forEach(row => { let gender = (row['성별'] || '').toString().trim().toUpperCase(); if (considerGender && femaleKeywords.includes(gender)) females.push(row); else others.push(row); });
+                unassigned.forEach(row => { let gender = (row['성별'] || '').toString().trim().toUpperCase(); if (femaleKeywords.includes(gender)) females.push(row); else others.push(row); });
                 females.sort((a, b) => b['나이'] - a['나이']); others.sort((a, b) => b['나이'] - a['나이']);
                 let stepDir = 1, currIdx = 0;
-                if (considerGender) {
-                    while (females.length > 0) {
-                        let minSize = Math.min(...groups.map(g => g.length)); let cand = groups.map((g, i) => i).filter(i => groups[i].length === minSize);
-                        let nextIdx = -1;
-                        if (stepDir === 1) { let val = cand.filter(i => i >= currIdx); nextIdx = val.length > 0 ? Math.min(...val) : (stepDir = -1, Math.max(...cand)); } 
-                        else { let val = cand.filter(i => i <= currIdx); nextIdx = val.length > 0 ? Math.max(...val) : (stepDir = 1, Math.min(...cand)); }
-                        currIdx = nextIdx; groups[currIdx].push(females.shift());
-                    }
+                while (females.length > 0) {
+                    let minSize = Math.min(...groups.map(g => g.length)); let cand = groups.map((g, i) => i).filter(i => groups[i].length === minSize);
+                    let nextIdx = -1;
+                    if (stepDir === 1) { let val = cand.filter(i => i >= currIdx); nextIdx = val.length > 0 ? Math.min(...val) : (stepDir = -1, Math.max(...cand)); } 
+                    else { let val = cand.filter(i => i <= currIdx); nextIdx = val.length > 0 ? Math.max(...val) : (stepDir = 1, Math.min(...cand)); }
+                    currIdx = nextIdx; groups[currIdx].push(females.shift());
                 }
                 let remaining = [...females, ...others].sort((a, b) => b['나이'] - a['나이']);
                 while (remaining.length > 0) {
@@ -742,7 +760,10 @@
                 }
                 let summaryData = [], resultData = [];
                 groups.forEach((group, index) => {
-                    group.sort((a, b) => b['나이'] - a['나이']); group.forEach(p => { resultData.push({ '조': (index + 1) + '조', ...p }); });
+                    // 🌟 [수정] 최종 엑셀 출력 시 조별 인원을 '가나다순(이름)'으로 정렬합니다.
+                    // (배정 알고리즘 자체는 나이/성별/부서 분산 로직을 그대로 사용하며, 여기서는 출력 순서만 바꿉니다.)
+                    group.sort((a, b) => (a['이름'] || '').toString().localeCompare((b['이름'] || '').toString(), 'ko'));
+                    group.forEach(p => { resultData.push({ '조': (index + 1) + '조', ...p }); });
                     if (group.length > 0) {
                         let fCount = group.filter(p => femaleKeywords.includes((p['성별']||'').toString().trim().toUpperCase())).length;
                         let avgAge = (group.reduce((sum, p) => sum + Number(p['나이'] || 0), 0) / group.length).toFixed(1);
@@ -750,11 +771,11 @@
                     }
                 });
                 const wb = XLSX.utils.book_new(); 
-                const wsSummary = XLSX.utils.json_to_sheet(summaryData); applyStyle(wsSummary); if(!wsSummary['!cols']) wsSummary['!cols'] = Array(10).fill({ wch: 16 });
-                const wsResult = XLSX.utils.json_to_sheet(resultData); applyStyle(wsResult); if(!wsResult['!cols']) wsResult['!cols'] = Array(10).fill({ wch: 16 });
+                const wsSummary = XLSX.utils.json_to_sheet(summaryData); applyStyle(wsSummary); ensureColWidths(wsSummary);
+                const wsResult = XLSX.utils.json_to_sheet(resultData); applyStyle(wsResult); ensureColWidths(wsResult);
                 XLSX.utils.book_append_sheet(wb, wsSummary, "1. 조별_통계_요약"); XLSX.utils.book_append_sheet(wb, wsResult, "2. 조배정_상세결과");
-                let fName = document.getElementById('outputFileNameGroup').value.trim() || 'K-Brain_오프라인교육_조배정표';
-                XLSX.writeFile(wb, fName + '.xlsx'); statusDiv.style.display = 'block'; setTimeout(() => { statusDiv.style.display = 'none'; }, 5000);
+                let fName = getOutputFileName('outputFileNameGroup', 'K-Brain_오프라인교육_조배정표');
+                XLSX.writeFile(wb, fName + '.xlsx'); showStatusMessage(statusDiv);
             } catch (err) { alert("오류가 발생했습니다."); }
         };
         reader.readAsArrayBuffer(fileInputGroup.files[0]);
@@ -795,11 +816,11 @@
                 roomResults.forEach(r => { let cat = r['객실구분']; if (cat === '여자') uniqueFemaleRooms.add(r['객실명']); else if (cat === '남자') uniqueMaleRooms.add(r['객실명']); else uniqueUnknownRooms.add(r['객실명']); });
                 let summaryData = [{ '학습자 총원': jsonData.length + '명', '남성 인원': totalMales + '명', '여성 인원': totalFemales + '명', '성별미상 인원': totalUnknowns + '명', '남성 배정 객실 (전체)': uniqueMaleRooms.size + '개', '여성 배정 객실 (전체)': uniqueFemaleRooms.size + '개', '총 필요 객실': (uniqueMaleRooms.size + uniqueFemaleRooms.size + uniqueUnknownRooms.size) + '개' }];
                 const newWorkbook = XLSX.utils.book_new(); 
-                const wsSummary = XLSX.utils.json_to_sheet(summaryData); applyStyle(wsSummary); if(!wsSummary['!cols']) wsSummary['!cols'] = Array(10).fill({ wch: 16 });
-                const wsResult = XLSX.utils.json_to_sheet(roomResults); applyStyle(wsResult); if(!wsResult['!cols']) wsResult['!cols'] = Array(10).fill({ wch: 16 });
+                const wsSummary = XLSX.utils.json_to_sheet(summaryData); applyStyle(wsSummary); ensureColWidths(wsSummary);
+                const wsResult = XLSX.utils.json_to_sheet(roomResults); applyStyle(wsResult); ensureColWidths(wsResult);
                 XLSX.utils.book_append_sheet(newWorkbook, wsSummary, "1. 숙소배정_통계_요약"); XLSX.utils.book_append_sheet(newWorkbook, wsResult, "2. 숙소배정_상세결과");
-                let fName = document.getElementById('outputFileNameRoom').value.trim() || 'K-Brain_오프라인교육_숙소배정표';
-                XLSX.writeFile(newWorkbook, fName + '.xlsx'); statusDiv.style.display = 'block'; setTimeout(() => { statusDiv.style.display = 'none'; }, 5000);
+                let fName = getOutputFileName('outputFileNameRoom', 'K-Brain_오프라인교육_숙소배정표');
+                XLSX.writeFile(newWorkbook, fName + '.xlsx'); showStatusMessage(statusDiv);
             } catch (error) { alert("오류가 발생했습니다."); }
         };
         reader.readAsArrayBuffer(fileInputRoom.files[0]);
@@ -880,11 +901,10 @@
                 
                 XLSX.utils.book_append_sheet(wb, wsResult, "설문가공결과_행열변환");
                 
-                let fName = document.getElementById('outputFileNameSurvey').value.trim() || 'K-Brain_만족도조사_변환결과';
+                let fName = getOutputFileName('outputFileNameSurvey', 'K-Brain_만족도조사_변환결과');
                 XLSX.writeFile(wb, fName + '.xlsx'); 
                 
-                statusDiv.style.display = 'block'; 
-                setTimeout(() => { statusDiv.style.display = 'none'; }, 5000);
+                showStatusMessage(statusDiv);
             } catch (error) { 
                 alert("파일을 처리하는 중 오류가 발생했습니다. 구글폼 다운로드 원본 파일이 맞는지 확인해주세요."); 
             }
@@ -893,15 +913,8 @@
     }
 
     function initLHUI() {
-        const countContainerLH = document.getElementById('btn-container-count-lh'); 
-        const sizeContainerLH = document.getElementById('btn-container-size-lh');
-        for(let i=1; i<=10; i++) {
-            let btnC = document.createElement('div'); btnC.className = 'num-btn btn-sm btn-count-lh ' + (i === 5 ? 'active' : ''); btnC.innerText = i; btnC.id = 'btn-count-lh-' + i; 
-            btnC.onclick = (e) => { e.stopPropagation(); selectNumberLH('count', i); }; countContainerLH.appendChild(btnC);
-            
-            let btnS = document.createElement('div'); btnS.className = 'num-btn btn-sm btn-size-lh'; btnS.innerText = i; btnS.id = 'btn-size-lh-' + i; 
-            btnS.onclick = (e) => { e.stopPropagation(); selectNumberLH('size', i); }; sizeContainerLH.appendChild(btnS);
-        }
+        createNumberButtons('btn-container-count-lh', 'btn-count-lh', 'btn-sm btn-count-lh', (i) => selectNumberLH('count', i), 5);
+        createNumberButtons('btn-container-size-lh', 'btn-size-lh', 'btn-sm btn-size-lh', (i) => selectNumberLH('size', i));
         
         const lhGroupContainer = document.getElementById('preassign-container-lh-group');
         lhGroupContainer.innerHTML = '';
@@ -1074,14 +1087,14 @@
                 });
 
                 const wb = XLSX.utils.book_new(); 
-                const wsSummary = XLSX.utils.json_to_sheet(summaryData); applyStyle(wsSummary); if(!wsSummary['!cols']) wsSummary['!cols'] = Array(10).fill({ wch: 16 });
-                const wsResult = XLSX.utils.json_to_sheet(resultData); applyStyle(wsResult); if(!wsResult['!cols']) wsResult['!cols'] = Array(10).fill({ wch: 16 });
+                const wsSummary = XLSX.utils.json_to_sheet(summaryData); applyStyle(wsSummary); ensureColWidths(wsSummary);
+                const wsResult = XLSX.utils.json_to_sheet(resultData); applyStyle(wsResult); ensureColWidths(wsResult);
                 
                 XLSX.utils.book_append_sheet(wb, wsSummary, "1. 통합배정_통계_요약"); XLSX.utils.book_append_sheet(wb, wsResult, "2. 통합배정_상세결과");
                 
-                let fName = document.getElementById('outputFileNameLH').value.trim() || 'K-Brain_LH전용_통합배정결과';
+                let fName = getOutputFileName('outputFileNameLH', 'K-Brain_LH전용_통합배정결과');
                 XLSX.writeFile(wb, fName + '.xlsx'); 
-                statusDiv.style.display = 'block'; setTimeout(() => { statusDiv.style.display = 'none'; }, 5000);
+                showStatusMessage(statusDiv);
             } catch (err) { alert("오류가 발생했습니다. 파일 형식을 확인해주세요."); }
         };
         reader.readAsArrayBuffer(fileInputLH.files[0]);
